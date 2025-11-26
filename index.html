@@ -206,7 +206,53 @@
         <div>
           <div style="color: var(--muted); font-size: 12px;">Realtime adoption</div>
           <div style="font-size: 18px;">Conversation AI Command Center</div>
-@@ -235,86 +256,102 @@
+        </div>
+      </div>
+      <div class="actions">
+        <button class="btn secondary" onclick="refreshData()">Aggiorna snapshot</button>
+        <button class="btn">Esporta report</button>
+      </div>
+    </div>
+    <div class="page-nav">
+      <button class="page-tab active" data-target="qualitativa">Analisi qualitativa</button>
+      <button class="page-tab" data-target="feedback">Feedback analysis</button>
+      <button class="page-tab" data-target="quantitativa">Analisi quantitativa</button>
+    </div>
+  </header>
+
+  <main>
+    <section class="page active" id="page-qualitativa">
+      <div class="grid metrics">
+        <div class="panel">
+          <h3>Utenti unici</h3>
+          <div class="value" id="usersValue">12.430</div>
+          <div class="trend" id="usersTrend">+8,2% vs 7g</div>
+        </div>
+        <div class="panel">
+          <h3>Interazioni</h3>
+          <div class="value" id="interactionsValue">184.290</div>
+          <div class="trend" id="interactionsTrend">+5,4% vs 7g</div>
+        </div>
+        <div class="panel">
+          <h3>Sessioni</h3>
+          <div class="value" id="sessionsValue">42.780</div>
+          <div class="trend" id="sessionsTrend">+3,1% vs 7g</div>
+        </div>
+        <div class="panel">
+          <h3>Tempo medio sessione</h3>
+          <div class="value" id="avgSessionValue">9m 12s</div>
+          <div class="trend" id="avgSessionTrend">+0,6m vs 7g</div>
+        </div>
+        <div class="panel">
+          <h3>Tasso di ritorno</h3>
+          <div class="value" id="returnRateValue">37,4%</div>
+          <div class="trend" id="returnRateTrend">+2,1 pt vs 7g</div>
+        </div>
+      </div>
+
+      <div class="section-title"><span></span>Andamento settimanale</div>
+      <div class="grid" style="grid-template-columns: 2fr 1fr; gap: 16px; align-items: stretch;">
+        <div class="panel chart-card">
           <canvas id="trendChart" height="120"></canvas>
         </div>
         <div class="panel chart-card">
@@ -309,7 +355,38 @@
           <div class="value" id="latency">2,4s</div>
           <div class="trend down" id="latencyTrend">-0,2s vs 7g</div>
         </div>
-@@ -353,52 +390,50 @@
+      </div>
+
+      <div class="grid" style="grid-template-columns: 1.2fr 1fr; gap: 16px; align-items: stretch;">
+        <div class="panel chart-card">
+          <h3>Mix di utilizzo</h3>
+          <canvas id="usageChart" height="200"></canvas>
+        </div>
+        <div class="panel chart-card">
+          <h3>Sessioni per fascia oraria</h3>
+          <canvas id="timeChart" height="200"></canvas>
+        </div>
+      </div>
+
+      <div class="section-title"><span></span>Tipologie di utilizzo</div>
+      <div class="grid usage-grid" id="usageGrid"></div>
+    </section>
+  </main>
+
+  <script>
+    const pages = document.querySelectorAll('.page');
+    const tabs = document.querySelectorAll('.page-tab');
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => switchPage(tab.dataset.target));
+    });
+
+    function switchPage(target) {
+      tabs.forEach(t => t.classList.toggle('active', t.dataset.target === target));
+      pages.forEach(p => p.classList.toggle('active', p.id === `page-${target}`));
+    }
+
+    const usageBreakdown = [
+      { label: 'Ricerca web', value: 22, color: '#58d3ff' },
       { label: 'Traduzione', value: 9, color: '#8c7bff' },
       { label: 'Drafting', value: 18, color: '#2ee6a8' },
       { label: 'Summarization', value: 14, color: '#ffae63' },
@@ -360,7 +437,43 @@
             borderWidth: 2.4,
             pointRadius: 4,
             pointBackgroundColor: '#0b1021',
-@@ -442,87 +477,50 @@
+            pointBorderColor: '#58d3ff'
+          },
+          {
+            label: 'Sessioni (k)',
+            data: baseSessions,
+            borderColor: '#8c7bff',
+            backgroundColor: 'transparent',
+            fill: false,
+            tension: 0.35,
+            borderWidth: 2,
+            pointRadius: 3,
+            pointBackgroundColor: '#8c7bff',
+            pointBorderColor: '#8c7bff'
+          }
+        ]
+      },
+      options: {
+        plugins: {
+          legend: { labels: { color: '#d9e1f7' }, position: 'top' },
+          tooltip: {
+            backgroundColor: '#11172e',
+            borderColor: 'rgba(255,255,255,0.08)',
+            borderWidth: 1,
+            padding: 12,
+            titleColor: '#fff',
+            bodyColor: '#dfe7ff'
+          }
+        },
+        scales: {
+          x: { ticks: { color: '#9aa7c7' }, grid: { color: 'rgba(255,255,255,0.04)' } },
+          y: { ticks: { color: '#9aa7c7' }, grid: { color: 'rgba(255,255,255,0.04)' }, beginAtZero: true }
+        }
+      }
+    });
+
+    const usageChart = new Chart(usageCtx, {
+      type: 'doughnut',
       data: {
         labels: usageBreakdown.map(u => u.label),
         datasets: [{
@@ -411,7 +524,26 @@
         }
       }
     });
-@@ -549,45 +547,34 @@
+
+    function refreshData() {
+      const delta = () => (Math.random() * 8 - 4).toFixed(1);
+      const percentDelta = () => (Math.random() * 4 - 2).toFixed(1);
+
+      const updateMetric = (id, base, formatter = v => v.toLocaleString('it-IT')) => {
+        const variation = delta();
+        const value = Math.max(base + Number(variation) * 120, base * 0.9);
+        document.getElementById(id).textContent = formatter(value);
+        return variation;
+      };
+
+      const usersVar = updateMetric('usersValue', 12430);
+      const interactionsVar = updateMetric('interactionsValue', 184290);
+      const sessionsVar = updateMetric('sessionsValue', 42780);
+
+      const avgSessionBase = 9.2 + Number(percentDelta());
+      document.getElementById('avgSessionValue').textContent = `${avgSessionBase.toFixed(1)}m`;
+      const returnRateBase = Math.max(30, Math.min(50, 37.4 + Number(percentDelta())));
+      document.getElementById('returnRateValue').textContent = `${returnRateBase.toFixed(1)}%`;
 
       const setTrend = (id, value, suffix = '% vs 7g') => {
         const el = document.getElementById(id);
