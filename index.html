@@ -160,15 +160,26 @@
     .chips { display: flex; flex-wrap: wrap; gap: 8px; }
     .chip { padding: 6px 10px; border-radius: 10px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.08); color: var(--muted); font-size: 13px; }
 
-    .feedback-hero { display: flex; flex-direction: column; gap: 18px; }
-    .feedback-main { display: flex; align-items: center; gap: 16px; }
-    .thumb-pill { background: rgba(255,109,96,0.16); border: 1px solid rgba(255,109,96,0.35); color: #ffb5ae; padding: 8px 12px; border-radius: 999px; font-weight: 700; font-size: 13px; letter-spacing: 0.2px; text-transform: uppercase; }
-    .feedback-value { font-size: 42px; font-weight: 800; letter-spacing: -0.5px; }
+    .feedback-shell { display: flex; flex-direction: column; gap: 16px; }
+    .feedback-surface { padding: 22px; border-radius: 18px; background: linear-gradient(135deg, rgba(255,255,255,0.04), rgba(255,255,255,0)); border: 1px solid rgba(255,255,255,0.08); box-shadow: 0 24px 80px rgba(0,0,0,0.45); position: relative; overflow: hidden; }
+    .feedback-surface::before { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at 18% 20%, rgba(255,109,96,0.18), transparent 42%), radial-gradient(circle at 82% 28%, rgba(88,211,255,0.12), transparent 38%), radial-gradient(circle at 60% 90%, rgba(140,123,255,0.12), transparent 36%); opacity: 0.9; pointer-events: none; }
+    .feedback-canvas { display: grid; grid-template-columns: 1.05fr 0.95fr 1fr; gap: 18px; position: relative; z-index: 1; }
+    .feedback-col { background: rgba(11,16,33,0.55); border: 1px solid rgba(255,255,255,0.06); border-radius: 16px; padding: 18px; display: flex; flex-direction: column; gap: 12px; backdrop-filter: blur(6px); box-shadow: var(--glow); }
+    .thumb-hero { display: flex; gap: 12px; align-items: center; }
+    .thumb-icon { width: 64px; height: 64px; border-radius: 16px; display: grid; place-items: center; font-size: 32px; background: radial-gradient(circle at 30% 30%, rgba(255,109,96,0.45), rgba(255,109,96,0.18)); border: 1px solid rgba(255,109,96,0.35); box-shadow: 0 16px 40px rgba(255,109,96,0.25); }
+    .eyebrow { text-transform: uppercase; letter-spacing: 1.2px; font-size: 11px; color: #ffb5ae; font-weight: 800; }
+    .feedback-value { font-size: 54px; font-weight: 800; letter-spacing: -0.6px; margin-top: 4px; }
     .feedback-sub { color: var(--muted); font-weight: 600; }
-    .feedback-grid { grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
-    .feedback-card { padding: 14px; border-radius: 12px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); display: flex; flex-direction: column; gap: 6px; box-shadow: var(--glow); }
-    .feedback-label { font-weight: 700; letter-spacing: 0.2px; }
-    .feedback-action { color: var(--muted); line-height: 1.5; font-weight: 600; }
+    .column-title { font-weight: 800; letter-spacing: 0.4px; color: var(--muted); text-transform: uppercase; font-size: 12px; display: flex; align-items: center; gap: 8px; }
+    .column-title::before { content: ''; width: 8px; height: 8px; border-radius: 50%; background: linear-gradient(135deg, var(--primary), var(--secondary)); box-shadow: 0 0 0 6px rgba(88,211,255,0.12); }
+    .macro-list, .remediation-list { display: flex; flex-direction: column; gap: 10px; }
+    .macro-card, .remediation-card { padding: 12px 14px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.06); background: rgba(255,255,255,0.03); position: relative; overflow: hidden; }
+    .macro-card::after, .remediation-card::after { content: ''; position: absolute; inset: 0; background: linear-gradient(135deg, rgba(88,211,255,0.05), rgba(140,123,255,0.05)); opacity: 0.8; pointer-events: none; }
+    .macro-name { font-weight: 800; letter-spacing: 0.2px; display: flex; align-items: center; gap: 10px; }
+    .swatch { width: 12px; height: 12px; border-radius: 10px; box-shadow: 0 8px 20px rgba(0,0,0,0.22); }
+    .remediation-card { padding-left: 16px; border-left: 3px solid rgba(88,211,255,0.5); }
+    .remediation-text { color: var(--muted); font-weight: 600; line-height: 1.6; }
+    @media (max-width: 1080px) { .feedback-canvas { grid-template-columns: 1fr; } }
 
     .page { display: none; }
     .page.active { display: block; animation: fadeIn 220ms ease; }
@@ -195,53 +206,7 @@
         <div>
           <div style="color: var(--muted); font-size: 12px;">Realtime adoption</div>
           <div style="font-size: 18px;">Conversation AI Command Center</div>
-        </div>
-      </div>
-      <div class="actions">
-        <button class="btn secondary" onclick="refreshData()">Aggiorna snapshot</button>
-        <button class="btn">Esporta report</button>
-      </div>
-    </div>
-    <div class="page-nav">
-      <button class="page-tab active" data-target="qualitativa">Analisi qualitativa</button>
-      <button class="page-tab" data-target="feedback">Feedback analysis</button>
-      <button class="page-tab" data-target="quantitativa">Analisi quantitativa</button>
-    </div>
-  </header>
-
-  <main>
-    <section class="page active" id="page-qualitativa">
-      <div class="grid metrics">
-        <div class="panel">
-          <h3>Utenti unici</h3>
-          <div class="value" id="usersValue">12.430</div>
-          <div class="trend" id="usersTrend">+8,2% vs 7g</div>
-        </div>
-        <div class="panel">
-          <h3>Interazioni</h3>
-          <div class="value" id="interactionsValue">184.290</div>
-          <div class="trend" id="interactionsTrend">+5,4% vs 7g</div>
-        </div>
-        <div class="panel">
-          <h3>Sessioni</h3>
-          <div class="value" id="sessionsValue">42.780</div>
-          <div class="trend" id="sessionsTrend">+3,1% vs 7g</div>
-        </div>
-        <div class="panel">
-          <h3>Tempo medio sessione</h3>
-          <div class="value" id="avgSessionValue">9m 12s</div>
-          <div class="trend" id="avgSessionTrend">+0,6m vs 7g</div>
-        </div>
-        <div class="panel">
-          <h3>Tasso di ritorno</h3>
-          <div class="value" id="returnRateValue">37,4%</div>
-          <div class="trend" id="returnRateTrend">+2,1 pt vs 7g</div>
-        </div>
-      </div>
-
-      <div class="section-title"><span></span>Andamento settimanale</div>
-      <div class="grid" style="grid-template-columns: 2fr 1fr; gap: 16px; align-items: stretch;">
-        <div class="panel chart-card">
+@@ -235,86 +256,102 @@
           <canvas id="trendChart" height="120"></canvas>
         </div>
         <div class="panel chart-card">
@@ -267,30 +232,55 @@
 
     <section class="page" id="page-feedback">
       <div class="section-title"><span></span>Feedback analysis</div>
-      <div class="panel feedback-hero">
-        <div class="feedback-main">
-          <div class="thumb-pill">👎 Thumbs down</div>
-          <div>
-            <div class="feedback-value">1.420</div>
-            <div class="feedback-sub">pollici in giù su 184.290 interazioni</div>
-          </div>
-        </div>
-        <div class="grid feedback-grid">
-          <div class="feedback-card">
-            <div class="feedback-label">Hallucinatione dati</div>
-            <div class="feedback-action">Remediation: raffinare grounding con fonti interne e reranker semantico.</div>
-          </div>
-          <div class="feedback-card">
-            <div class="feedback-label">Incomprensione intenti</div>
-            <div class="feedback-action">Remediation: ampliare training set conversazionale e prompt di disambiguazione.</div>
-          </div>
-          <div class="feedback-card">
-            <div class="feedback-label">Latency percepita</div>
-            <div class="feedback-action">Remediation: cache sugli intenti frequenti e parallelizzazione retrieval.</div>
-          </div>
-          <div class="feedback-card">
-            <div class="feedback-label">Stile non conforme</div>
-            <div class="feedback-action">Remediation: policy di tono pre-compilate e controllo finale sul response planner.</div>
+      <div class="feedback-shell">
+        <div class="feedback-surface">
+          <div class="feedback-canvas">
+            <div class="feedback-col">
+              <div class="thumb-hero">
+                <div class="thumb-icon">👎</div>
+                <div>
+                  <div class="eyebrow">Thumbs down</div>
+                  <div class="feedback-value">1.420</div>
+                  <div class="feedback-sub">pollici in giù su 184.290 interazioni</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="feedback-col">
+              <div class="column-title">Macrocategorie di errore</div>
+              <div class="macro-list">
+                <div class="macro-card">
+                  <div class="macro-name"><div class="swatch" style="background:#ff6d60;"></div>Hallucinatione dati</div>
+                </div>
+                <div class="macro-card">
+                  <div class="macro-name"><div class="swatch" style="background:#58d3ff;"></div>Incomprensione intenti</div>
+                </div>
+                <div class="macro-card">
+                  <div class="macro-name"><div class="swatch" style="background:#8c7bff;"></div>Latency percepita</div>
+                </div>
+                <div class="macro-card">
+                  <div class="macro-name"><div class="swatch" style="background:#2ee6a8;"></div>Stile non conforme</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="feedback-col">
+              <div class="column-title">Remediation action</div>
+              <div class="remediation-list">
+                <div class="remediation-card">
+                  <div class="remediation-text">Raffinare grounding con fonti interne e reranker semantico.</div>
+                </div>
+                <div class="remediation-card">
+                  <div class="remediation-text">Ampliare training set conversazionale e prompt di disambiguazione.</div>
+                </div>
+                <div class="remediation-card">
+                  <div class="remediation-text">Cache sugli intenti frequenti e parallelizzazione retrieval.</div>
+                </div>
+                <div class="remediation-card">
+                  <div class="remediation-text">Policy di tono pre-compilate e controllo finale sul response planner.</div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -319,38 +309,7 @@
           <div class="value" id="latency">2,4s</div>
           <div class="trend down" id="latencyTrend">-0,2s vs 7g</div>
         </div>
-      </div>
-
-      <div class="grid" style="grid-template-columns: 1.2fr 1fr; gap: 16px; align-items: stretch;">
-        <div class="panel chart-card">
-          <h3>Mix di utilizzo</h3>
-          <canvas id="usageChart" height="200"></canvas>
-        </div>
-        <div class="panel chart-card">
-          <h3>Sessioni per fascia oraria</h3>
-          <canvas id="timeChart" height="200"></canvas>
-        </div>
-      </div>
-
-      <div class="section-title"><span></span>Tipologie di utilizzo</div>
-      <div class="grid usage-grid" id="usageGrid"></div>
-    </section>
-  </main>
-
-  <script>
-    const pages = document.querySelectorAll('.page');
-    const tabs = document.querySelectorAll('.page-tab');
-    tabs.forEach(tab => {
-      tab.addEventListener('click', () => switchPage(tab.dataset.target));
-    });
-
-    function switchPage(target) {
-      tabs.forEach(t => t.classList.toggle('active', t.dataset.target === target));
-      pages.forEach(p => p.classList.toggle('active', p.id === `page-${target}`));
-    }
-
-    const usageBreakdown = [
-      { label: 'Ricerca web', value: 22, color: '#58d3ff' },
+@@ -353,52 +390,50 @@
       { label: 'Traduzione', value: 9, color: '#8c7bff' },
       { label: 'Drafting', value: 18, color: '#2ee6a8' },
       { label: 'Summarization', value: 14, color: '#ffae63' },
@@ -401,43 +360,7 @@
             borderWidth: 2.4,
             pointRadius: 4,
             pointBackgroundColor: '#0b1021',
-            pointBorderColor: '#58d3ff'
-          },
-          {
-            label: 'Sessioni (k)',
-            data: baseSessions,
-            borderColor: '#8c7bff',
-            backgroundColor: 'transparent',
-            fill: false,
-            tension: 0.35,
-            borderWidth: 2,
-            pointRadius: 3,
-            pointBackgroundColor: '#8c7bff',
-            pointBorderColor: '#8c7bff'
-          }
-        ]
-      },
-      options: {
-        plugins: {
-          legend: { labels: { color: '#d9e1f7' }, position: 'top' },
-          tooltip: {
-            backgroundColor: '#11172e',
-            borderColor: 'rgba(255,255,255,0.08)',
-            borderWidth: 1,
-            padding: 12,
-            titleColor: '#fff',
-            bodyColor: '#dfe7ff'
-          }
-        },
-        scales: {
-          x: { ticks: { color: '#9aa7c7' }, grid: { color: 'rgba(255,255,255,0.04)' } },
-          y: { ticks: { color: '#9aa7c7' }, grid: { color: 'rgba(255,255,255,0.04)' }, beginAtZero: true }
-        }
-      }
-    });
-
-    const usageChart = new Chart(usageCtx, {
-      type: 'doughnut',
+@@ -442,87 +477,50 @@
       data: {
         labels: usageBreakdown.map(u => u.label),
         datasets: [{
@@ -488,26 +411,7 @@
         }
       }
     });
-
-    function refreshData() {
-      const delta = () => (Math.random() * 8 - 4).toFixed(1);
-      const percentDelta = () => (Math.random() * 4 - 2).toFixed(1);
-
-      const updateMetric = (id, base, formatter = v => v.toLocaleString('it-IT')) => {
-        const variation = delta();
-        const value = Math.max(base + Number(variation) * 120, base * 0.9);
-        document.getElementById(id).textContent = formatter(value);
-        return variation;
-      };
-
-      const usersVar = updateMetric('usersValue', 12430);
-      const interactionsVar = updateMetric('interactionsValue', 184290);
-      const sessionsVar = updateMetric('sessionsValue', 42780);
-
-      const avgSessionBase = 9.2 + Number(percentDelta());
-      document.getElementById('avgSessionValue').textContent = `${avgSessionBase.toFixed(1)}m`;
-      const returnRateBase = Math.max(30, Math.min(50, 37.4 + Number(percentDelta())));
-      document.getElementById('returnRateValue').textContent = `${returnRateBase.toFixed(1)}%`;
+@@ -549,45 +547,34 @@
 
       const setTrend = (id, value, suffix = '% vs 7g') => {
         const el = document.getElementById(id);
