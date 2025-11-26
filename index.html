@@ -31,16 +31,22 @@
     }
 
     header {
-      padding: 40px 64px 24px;
+      padding: 36px 64px 18px;
       display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
+      flex-direction: column;
+      gap: 18px;
       position: sticky;
       top: 0;
       background: linear-gradient(180deg, rgba(11,16,33,0.95) 0%, rgba(11,16,33,0.70) 100%);
       backdrop-filter: blur(12px);
       z-index: 10;
+    }
+
+    .top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
     }
 
     .brand {
@@ -72,11 +78,7 @@
       100% { transform: scale(1.6); opacity: 0; }
     }
 
-    .actions {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
+    .actions { display: flex; align-items: center; gap: 12px; }
     .btn {
       background: linear-gradient(135deg, var(--primary), var(--secondary));
       color: #0b1021;
@@ -95,6 +97,28 @@
       border: 1px solid rgba(255,255,255,0.08);
       box-shadow: none;
     }
+
+    .page-nav {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 14px;
+      padding: 6px;
+      width: fit-content;
+    }
+    .page-tab {
+      border: none;
+      background: transparent;
+      color: var(--muted);
+      padding: 10px 16px;
+      border-radius: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 120ms ease, color 120ms ease;
+    }
+    .page-tab.active { background: linear-gradient(135deg, rgba(88,211,255,0.15), rgba(140,123,255,0.15)); color: var(--text); }
 
     main { padding: 0 64px 64px; }
 
@@ -117,166 +141,213 @@
       opacity: 0.6;
       pointer-events: none;
     }
-    .panel h3 {
-      margin: 0;
-      font-size: 15px;
-      color: var(--muted);
-      letter-spacing: 0.2px;
-    }
-    .panel .value {
-      margin-top: 12px;
-      font-size: 32px;
-      font-weight: 700;
-    }
-    .trend {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 6px 10px;
-      border-radius: 999px;
-      font-size: 13px;
-      font-weight: 600;
-      background: rgba(46, 230, 168, 0.12);
-      color: #9cf2cc;
-    }
+    .panel h3 { margin: 0; font-size: 15px; color: var(--muted); letter-spacing: 0.2px; }
+    .panel .value { margin-top: 12px; font-size: 32px; font-weight: 700; }
+    .trend { display: inline-flex; align-items: center; gap: 6px; padding: 6px 10px; border-radius: 999px; font-size: 13px; font-weight: 600; background: rgba(46, 230, 168, 0.12); color: #9cf2cc; }
     .trend.down { background: rgba(255, 109, 96, 0.12); color: #ffb5ae; }
 
-    .section-title {
-      margin: 32px 0 12px;
-      font-size: 18px;
-      letter-spacing: 0.3px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-    .section-title span {
-      width: 4px;
-      height: 20px;
-      border-radius: 6px;
-      background: linear-gradient(180deg, var(--primary), var(--secondary));
-      display: inline-block;
-    }
+    .section-title { margin: 32px 0 12px; font-size: 18px; letter-spacing: 0.3px; display: flex; align-items: center; gap: 10px; }
+    .section-title span { width: 4px; height: 20px; border-radius: 6px; background: linear-gradient(180deg, var(--primary), var(--secondary)); display: inline-block; }
 
     .chart-card { padding: 20px; }
 
     .usage-grid { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
-    .usage-item {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      padding: 14px;
-      border-radius: 12px;
-      background: rgba(255,255,255,0.02);
-      border: 1px solid rgba(255,255,255,0.05);
-    }
-    .usage-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-weight: 600;
-      color: var(--muted);
-    }
-    .progress {
-      height: 8px;
-      border-radius: 999px;
-      background: rgba(255,255,255,0.06);
-      overflow: hidden;
-    }
-    .progress-bar {
-      height: 100%;
-      border-radius: 999px;
-      background: linear-gradient(90deg, var(--primary), var(--secondary));
-    }
+    .usage-item { display: flex; flex-direction: column; gap: 8px; padding: 14px; border-radius: 12px; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); }
+    .usage-header { display: flex; justify-content: space-between; align-items: center; font-weight: 600; color: var(--muted); }
+    .progress { height: 8px; border-radius: 999px; background: rgba(255,255,255,0.06); overflow: hidden; }
+    .progress-bar { height: 100%; border-radius: 999px; background: linear-gradient(90deg, var(--primary), var(--secondary)); }
 
-    .chips {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-    .chip {
-      padding: 6px 10px;
-      border-radius: 10px;
-      background: rgba(255,255,255,0.06);
-      border: 1px solid rgba(255,255,255,0.08);
-      color: var(--muted);
-      font-size: 13px;
-    }
+    .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+    .chip { padding: 6px 10px; border-radius: 10px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.08); color: var(--muted); font-size: 13px; }
+
+    .page { display: none; }
+    .page.active { display: block; animation: fadeIn 220ms ease; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
 
     @media (max-width: 960px) {
       header { padding: 28px 24px 18px; }
       main { padding: 0 24px 32px; }
+      .top-bar { flex-direction: column; align-items: flex-start; }
     }
     @media (max-width: 640px) {
-      header { flex-direction: column; align-items: flex-start; }
       .actions { width: 100%; }
       .btn { flex: 1; text-align: center; }
+      .page-nav { width: 100%; justify-content: space-between; }
+      .page-tab { flex: 1; text-align: center; }
     }
   </style>
 </head>
 <body>
   <header>
-    <div class="brand">
-      <div class="pulse"></div>
-      <div>
-        <div style="color: var(--muted); font-size: 12px;">Realtime adoption</div>
-        <div style="font-size: 18px;">Conversation AI Command Center</div>
+    <div class="top-bar">
+      <div class="brand">
+        <div class="pulse"></div>
+        <div>
+          <div style="color: var(--muted); font-size: 12px;">Realtime adoption</div>
+          <div style="font-size: 18px;">Conversation AI Command Center</div>
+        </div>
+      </div>
+      <div class="actions">
+        <button class="btn secondary" onclick="refreshData()">Aggiorna snapshot</button>
+        <button class="btn">Esporta report</button>
       </div>
     </div>
-    <div class="actions">
-      <button class="btn secondary" onclick="refreshData()">Aggiorna snapshot</button>
-      <button class="btn">Esporta report</button>
+    <div class="page-nav">
+      <button class="page-tab active" data-target="qualitativa">Analisi qualitativa</button>
+      <button class="page-tab" data-target="feedback">Feedback analysis</button>
+      <button class="page-tab" data-target="quantitativa">Analisi quantitativa</button>
     </div>
   </header>
 
   <main>
-    <div class="grid metrics">
-      <div class="panel">
-        <h3>Utenti unici attivi</h3>
-        <div class="value" id="usersValue">12.430</div>
-        <div class="trend" id="usersTrend">+8,2% vs 7g</div>
+    <section class="page active" id="page-qualitativa">
+      <div class="grid metrics">
+        <div class="panel">
+          <h3>Utenti unici</h3>
+          <div class="value" id="usersValue">12.430</div>
+          <div class="trend" id="usersTrend">+8,2% vs 7g</div>
+        </div>
+        <div class="panel">
+          <h3>Interazioni</h3>
+          <div class="value" id="interactionsValue">184.290</div>
+          <div class="trend" id="interactionsTrend">+5,4% vs 7g</div>
+        </div>
+        <div class="panel">
+          <h3>Sessioni</h3>
+          <div class="value" id="sessionsValue">42.780</div>
+          <div class="trend" id="sessionsTrend">+3,1% vs 7g</div>
+        </div>
+        <div class="panel">
+          <h3>Tempo medio sessione</h3>
+          <div class="value" id="avgSessionValue">9m 12s</div>
+          <div class="trend" id="avgSessionTrend">+0,6m vs 7g</div>
+        </div>
+        <div class="panel">
+          <h3>Tasso di ritorno</h3>
+          <div class="value" id="returnRateValue">37,4%</div>
+          <div class="trend" id="returnRateTrend">+2,1 pt vs 7g</div>
+        </div>
       </div>
-      <div class="panel">
-        <h3>Interazioni</h3>
-        <div class="value" id="interactionsValue">184.290</div>
-        <div class="trend" id="interactionsTrend">+5,4% vs 7g</div>
-      </div>
-      <div class="panel">
-        <h3>Sessioni</h3>
-        <div class="value" id="sessionsValue">42.780</div>
-        <div class="trend" id="sessionsTrend">+3,1% vs 7g</div>
-      </div>
-      <div class="panel">
-        <h3>NPS conversazionale</h3>
-        <div class="value" id="npsValue">71</div>
-        <div class="trend" id="npsTrend">+2 pts</div>
-      </div>
-    </div>
 
-    <div class="section-title"><span></span>Andamento settimanale</div>
-    <div class="grid" style="grid-template-columns: 2fr 1fr; gap: 16px; align-items: stretch;">
-      <div class="panel chart-card">
-        <canvas id="trendChart" height="120"></canvas>
+      <div class="section-title"><span></span>Andamento settimanale</div>
+      <div class="grid" style="grid-template-columns: 2fr 1fr; gap: 16px; align-items: stretch;">
+        <div class="panel chart-card">
+          <canvas id="trendChart" height="120"></canvas>
+        </div>
+        <div class="panel chart-card">
+          <h3>Pulse qualitativo</h3>
+          <div class="chips" style="margin-top: 8px;">
+            <div class="chip">Top intent: briefing prodotto</div>
+            <div class="chip">Tono: 74% positivo</div>
+            <div class="chip">Escalation umane: 3,8%</div>
+            <div class="chip">Risposte 1st try: 86%</div>
+          </div>
+        </div>
       </div>
-      <div class="panel chart-card">
-        <h3>Mix di utilizzo</h3>
-        <canvas id="usageChart" height="180"></canvas>
+
+      <div class="section-title"><span></span>Insights rapidi</div>
+      <div class="chips">
+        <div class="chip">Peak: martedì 10:00-12:00</div>
+        <div class="chip">42% delle ricerche includono fonti web</div>
+        <div class="chip">Tempo medio sessione: 9m 12s</div>
+        <div class="chip">Top team: Product, Sales Enablement</div>
+        <div class="chip">Conversazioni audio +31% WoW</div>
       </div>
-    </div>
+    </section>
 
-    <div class="section-title"><span></span>Tipologie di utilizzo</div>
-    <div class="grid usage-grid" id="usageGrid"></div>
+    <section class="page" id="page-feedback">
+      <div class="section-title"><span></span>Feedback analysis</div>
+      <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));">
+        <div class="panel">
+          <h3>CSAT conversazionale</h3>
+          <div class="value" id="csatValue">4,7 / 5</div>
+          <div class="trend" id="csatTrend">+0,2 vs 7g</div>
+        </div>
+        <div class="panel">
+          <h3>Sentiment positivo</h3>
+          <div class="value" id="sentimentValue">76%</div>
+          <div class="trend" id="sentimentTrend">+3,0 pt vs 7g</div>
+        </div>
+        <div class="panel">
+          <h3>Vol. feedback</h3>
+          <div class="value" id="feedbackVolume">1.280</div>
+          <div class="trend" id="feedbackTrend">+5,8% vs 7g</div>
+        </div>
+      </div>
 
-    <div class="section-title"><span></span>Insights rapidi</div>
-    <div class="chips">
-      <div class="chip">Peak: martedì 10:00-12:00</div>
-      <div class="chip">42% delle ricerche includono fonti web</div>
-      <div class="chip">Tempo medio sessione: 9m 12s</div>
-      <div class="chip">Top team: Product, Sales Enablement</div>
-      <div class="chip">Conversazioni audio +31% WoW</div>
-    </div>
+      <div class="grid" style="grid-template-columns: 1.2fr 1fr; align-items: stretch; gap: 16px;">
+        <div class="panel chart-card">
+          <h3>Distribuzione sentiment</h3>
+          <canvas id="sentimentChart" height="140"></canvas>
+        </div>
+        <div class="panel chart-card">
+          <h3>Temi ricorrenti</h3>
+          <canvas id="themesChart" height="140"></canvas>
+        </div>
+      </div>
+
+      <div class="section-title"><span></span>Highlights qualitativi</div>
+      <div class="chips">
+        <div class="chip">"Risposte coerenti con i documenti interni"</div>
+        <div class="chip">"Vorremmo più esempi di output marketing"</div>
+        <div class="chip">Ridotte le escalation su dati di prodotto (-18%)</div>
+        <div class="chip">Nuove lingue richieste: DE, PT-BR</div>
+      </div>
+    </section>
+
+    <section class="page" id="page-quantitativa">
+      <div class="section-title"><span></span>Analisi quantitativa</div>
+      <div class="grid metrics">
+        <div class="panel">
+          <h3>Utenti settimanali</h3>
+          <div class="value" id="weeklyUsers">8.940</div>
+          <div class="trend" id="weeklyUsersTrend">+6,1% vs 7g</div>
+        </div>
+        <div class="panel">
+          <h3>Interazioni / sessione</h3>
+          <div class="value" id="perSession">4,3</div>
+          <div class="trend" id="perSessionTrend">+0,2 vs 7g</div>
+        </div>
+        <div class="panel">
+          <h3>Completion rate</h3>
+          <div class="value" id="completion">91%</div>
+          <div class="trend" id="completionTrend">+1,4 pt vs 7g</div>
+        </div>
+        <div class="panel">
+          <h3>Latency p95</h3>
+          <div class="value" id="latency">2,4s</div>
+          <div class="trend down" id="latencyTrend">-0,2s vs 7g</div>
+        </div>
+      </div>
+
+      <div class="grid" style="grid-template-columns: 1.2fr 1fr; gap: 16px; align-items: stretch;">
+        <div class="panel chart-card">
+          <h3>Mix di utilizzo</h3>
+          <canvas id="usageChart" height="200"></canvas>
+        </div>
+        <div class="panel chart-card">
+          <h3>Sessioni per fascia oraria</h3>
+          <canvas id="timeChart" height="200"></canvas>
+        </div>
+      </div>
+
+      <div class="section-title"><span></span>Tipologie di utilizzo</div>
+      <div class="grid usage-grid" id="usageGrid"></div>
+    </section>
   </main>
 
   <script>
+    const pages = document.querySelectorAll('.page');
+    const tabs = document.querySelectorAll('.page-tab');
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => switchPage(tab.dataset.target));
+    });
+
+    function switchPage(target) {
+      tabs.forEach(t => t.classList.toggle('active', t.dataset.target === target));
+      pages.forEach(p => p.classList.toggle('active', p.id === `page-${target}`));
+    }
+
     const usageBreakdown = [
       { label: 'Ricerca web', value: 22, color: '#58d3ff' },
       { label: 'Traduzione', value: 9, color: '#8c7bff' },
@@ -304,10 +375,13 @@
 
     const trendCtx = document.getElementById('trendChart');
     const usageCtx = document.getElementById('usageChart');
+    const sentimentCtx = document.getElementById('sentimentChart');
+    const themesCtx = document.getElementById('themesChart');
+    const timeCtx = document.getElementById('timeChart');
 
+    const labels = ['Lun', 'Mar', 'Mer', 'Gio', 'Ven', 'Sab', 'Dom'];
     const baseTrend = [120, 145, 162, 150, 178, 190, 205];
     const baseSessions = [32, 36, 34, 35, 37, 40, 43];
-    const labels = ['Lun', 'Mar', 'Mer', 'Gio', 'Ven', 'Sab', 'Dom'];
 
     const gradient = trendCtx.getContext('2d').createLinearGradient(0, 0, 0, 220);
     gradient.addColorStop(0, 'rgba(88, 211, 255, 0.35)');
@@ -390,44 +464,129 @@
       }
     });
 
+    const sentimentChart = new Chart(sentimentCtx, {
+      type: 'doughnut',
+      data: {
+        labels: ['Positivo', 'Neutro', 'Negativo'],
+        datasets: [{
+          data: [76, 18, 6],
+          backgroundColor: ['#2ee6a8', '#58d3ff', '#ff6d60'],
+          borderColor: '#0b1021',
+          borderWidth: 1
+        }]
+      },
+      options: {
+        cutout: '55%',
+        plugins: { legend: { position: 'bottom', labels: { color: '#d9e1f7' } } }
+      }
+    });
+
+    const themesChart = new Chart(themesCtx, {
+      type: 'bar',
+      data: {
+        labels: ['Accuracy', 'Velocità', 'Personalizzazione', 'Integrazioni', 'UX'],
+        datasets: [{
+          label: 'Menzioni',
+          data: [42, 35, 28, 22, 18],
+          backgroundColor: '#8c7bff',
+          borderRadius: 8,
+        }]
+      },
+      options: {
+        plugins: { legend: { display: false }, tooltip: { backgroundColor: '#11172e', titleColor: '#fff', bodyColor: '#dfe7ff' } },
+        scales: {
+          x: { ticks: { color: '#9aa7c7' }, grid: { display: false } },
+          y: { ticks: { color: '#9aa7c7' }, grid: { color: 'rgba(255,255,255,0.05)' }, beginAtZero: true }
+        }
+      }
+    });
+
+    const timeChart = new Chart(timeCtx, {
+      type: 'line',
+      data: {
+        labels: ['08', '10', '12', '14', '16', '18', '20', '22'],
+        datasets: [{
+          label: 'Sessioni (k)',
+          data: [2.4, 3.1, 3.6, 3.3, 3.8, 4.1, 2.9, 1.6],
+          borderColor: '#2ee6a8',
+          backgroundColor: 'rgba(46, 230, 168, 0.15)',
+          fill: true,
+          tension: 0.35,
+          borderWidth: 2.4,
+          pointRadius: 3,
+          pointBackgroundColor: '#0b1021',
+          pointBorderColor: '#2ee6a8'
+        }]
+      },
+      options: {
+        plugins: { legend: { display: false }, tooltip: { backgroundColor: '#11172e', titleColor: '#fff', bodyColor: '#dfe7ff' } },
+        scales: {
+          x: { ticks: { color: '#9aa7c7' }, grid: { color: 'rgba(255,255,255,0.04)' } },
+          y: { ticks: { color: '#9aa7c7' }, grid: { color: 'rgba(255,255,255,0.04)' }, beginAtZero: true }
+        }
+      }
+    });
+
     function refreshData() {
       const delta = () => (Math.random() * 8 - 4).toFixed(1);
-      const updateMetric = (id, base) => {
+      const percentDelta = () => (Math.random() * 4 - 2).toFixed(1);
+
+      const updateMetric = (id, base, formatter = v => v.toLocaleString('it-IT')) => {
         const variation = delta();
         const value = Math.max(base + Number(variation) * 120, base * 0.9);
-        document.getElementById(id).textContent = value.toLocaleString('it-IT');
+        document.getElementById(id).textContent = formatter(value);
         return variation;
       };
 
-      const u = updateMetric('usersValue', 12430);
-      const i = updateMetric('interactionsValue', 184290);
-      const s = updateMetric('sessionsValue', 42780);
-      const n = Math.max(65, Math.min(90, 71 + Number(delta())));
-      document.getElementById('npsValue').textContent = n;
+      const usersVar = updateMetric('usersValue', 12430);
+      const interactionsVar = updateMetric('interactionsValue', 184290);
+      const sessionsVar = updateMetric('sessionsValue', 42780);
 
-      const trendText = (id, v) => {
+      const avgSessionBase = 9.2 + Number(percentDelta());
+      document.getElementById('avgSessionValue').textContent = `${avgSessionBase.toFixed(1)}m`;
+      const returnRateBase = Math.max(30, Math.min(50, 37.4 + Number(percentDelta())));
+      document.getElementById('returnRateValue').textContent = `${returnRateBase.toFixed(1)}%`;
+
+      const setTrend = (id, value, suffix = '% vs 7g') => {
         const el = document.getElementById(id);
-        const positive = v >= 0;
-        el.textContent = `${positive ? '+' : ''}${v}% vs 7g`;
+        const positive = parseFloat(value) >= 0;
+        el.textContent = `${positive ? '+' : ''}${value}${suffix}`;
         el.className = 'trend ' + (positive ? '' : 'down');
       };
-      trendText('usersTrend', u);
-      trendText('interactionsTrend', i);
-      trendText('sessionsTrend', s);
-      trendText('npsTrend', (n - 71).toFixed(1) + ' pts');
 
-      const noise = usageBreakdown.map(u => Math.max(4, Math.min(25, u.value + Number(delta()))));
-      const total = noise.reduce((a,b) => a + b, 0);
-      const normalized = noise.map(v => Math.round((v / total) * 100));
+      setTrend('usersTrend', usersVar);
+      setTrend('interactionsTrend', interactionsVar);
+      setTrend('sessionsTrend', sessionsVar);
+      setTrend('avgSessionTrend', percentDelta(), 'm vs 7g');
+      setTrend('returnRateTrend', percentDelta(), ' pt vs 7g');
 
+      const usageNoise = usageBreakdown.map(u => Math.max(4, Math.min(25, u.value + Number(percentDelta()))));
+      const usageTotal = usageNoise.reduce((a,b) => a + b, 0);
+      const normalized = usageNoise.map(v => Math.round((v / usageTotal) * 100));
       usageChart.data.datasets[0].data = normalized;
       usageChart.update();
-
       Array.from(usageGrid.children).forEach((el, idx) => {
         const val = normalized[idx];
         el.querySelector('strong').textContent = `${val}%`;
         el.querySelector('.progress-bar').style.width = `${val}%`;
       });
+
+      const csatBase = Math.min(4.9, Math.max(4.3, 4.7 + Number(percentDelta())/10));
+      document.getElementById('csatValue').textContent = `${csatBase.toFixed(1)} / 5`;
+      setTrend('csatTrend', percentDelta());
+
+      const sentimentBase = Math.min(90, Math.max(60, 76 + Number(percentDelta())));
+      document.getElementById('sentimentValue').textContent = `${sentimentBase.toFixed(0)}%`;
+      setTrend('sentimentTrend', percentDelta(), ' pt vs 7g');
+
+      const volumeVar = updateMetric('feedbackVolume', 1280);
+      setTrend('feedbackTrend', volumeVar);
+
+      const weeklyUsersVar = updateMetric('weeklyUsers', 8940);
+      setTrend('weeklyUsersTrend', weeklyUsersVar);
+      setTrend('perSessionTrend', percentDelta());
+      setTrend('completionTrend', percentDelta(), ' pt vs 7g');
+      setTrend('latencyTrend', (Math.random() * -0.8).toFixed(1), 's vs 7g');
     }
   </script>
 </body>
