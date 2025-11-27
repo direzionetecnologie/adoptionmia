@@ -1,12 +1,13 @@
 <!DOCTYPE html>
+
 <html lang="it">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Adoption Intelligence - Conversational Agent</title>
+  <title>MIA Monitoraggio Adoption</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chartjs-chart-box-and-violin-plot@4"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
   <style>
     :root {
       --bg: #0b1021;
@@ -19,184 +20,413 @@
       --glow: 0 10px 40px rgba(88, 211, 255, 0.25);
     }
 
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      font-family: 'Inter', system-ui, -apple-system, sans-serif;
-      background: radial-gradient(circle at 20% 20%, rgba(88, 211, 255, 0.08), transparent 35%),
-                  radial-gradient(circle at 80% 0%, rgba(140, 123, 255, 0.09), transparent 40%),
-                  radial-gradient(circle at 50% 70%, rgba(46, 230, 168, 0.07), transparent 45%),
-                  var(--bg);
-      color: var(--text);
-      min-height: 100vh;
-    }
+```
+* { box-sizing: border-box; }
 
-    header {
-      padding: 36px 64px 18px;
-      display: flex;
-      flex-direction: column;
-      gap: 18px;
-      position: sticky;
-      top: 0;
-      background: linear-gradient(180deg, rgba(11,16,33,0.95) 0%, rgba(11,16,33,0.70) 100%);
-      backdrop-filter: blur(12px);
-      z-index: 10;
-    }
+body {
+  margin: 0;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  background: radial-gradient(circle at 20% 20%, rgba(88, 211, 255, 0.08), transparent 35%),
+              radial-gradient(circle at 80% 0%, rgba(140, 123, 255, 0.09), transparent 40%),
+              radial-gradient(circle at 50% 70%, rgba(46, 230, 168, 0.07), transparent 45%),
+              var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+}
 
-    .top-bar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-    }
+header {
+  padding: 32px 64px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  position: sticky;
+  top: 0;
+  background: linear-gradient(180deg, rgba(11,16,33,0.98) 0%, rgba(11,16,33,0.80) 100%);
+  backdrop-filter: blur(10px);
+  z-index: 10;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+}
 
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      font-weight: 700;
-      letter-spacing: 0.4px;
-      text-transform: uppercase;
-    }
+.top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
 
-    .pulse {
-      width: 12px;
-      height: 12px;
-      background: var(--accent);
-      border-radius: 50%;
-      position: relative;
-    }
-    .pulse::after {
-      content: '';
-      position: absolute;
-      inset: -8px;
-      border-radius: 50%;
-      border: 1px solid rgba(46, 230, 168, 0.5);
-      animation: pulse 2s infinite;
-    }
-    @keyframes pulse {
-      0% { transform: scale(0.6); opacity: 0.7; }
-      100% { transform: scale(1.6); opacity: 0; }
-    }
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+}
 
-    .actions { display: flex; align-items: center; gap: 12px; }
-    .btn {
-      background: linear-gradient(135deg, var(--primary), var(--secondary));
-      color: #0b1021;
-      border: none;
-      border-radius: 12px;
-      padding: 12px 16px;
-      font-weight: 600;
-      cursor: pointer;
-      box-shadow: var(--glow);
-      transition: transform 120ms ease, box-shadow 120ms ease;
-    }
-    .btn:hover { transform: translateY(-1px); box-shadow: 0 10px 35px rgba(140, 123, 255, 0.25); }
-    .btn.secondary {
-      background: transparent;
-      color: var(--text);
-      border: 1px solid rgba(255,255,255,0.08);
-      box-shadow: none;
-    }
+.pulse {
+  width: 10px;
+  height: 10px;
+  background: var(--accent);
+  border-radius: 50%;
+  position: relative;
+}
 
-    .page-nav {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      background: rgba(255,255,255,0.03);
-      border: 1px solid rgba(255,255,255,0.06);
-      border-radius: 14px;
-      padding: 6px;
-      width: fit-content;
-    }
-    .page-tab {
-      border: none;
-      background: transparent;
-      color: var(--muted);
-      padding: 10px 16px;
-      border-radius: 10px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: background 120ms ease, color 120ms ease;
-    }
-    .page-tab.active { background: linear-gradient(135deg, rgba(88,211,255,0.15), rgba(140,123,255,0.15)); color: var(--text); }
+.pulse::after {
+  content: '';
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  border: 1px solid rgba(46, 230, 168, 0.5);
+  animation: pulse 2s infinite;
+}
 
-    main { padding: 0 64px 64px; }
+@keyframes pulse {
+  0% { transform: scale(0.6); opacity: 0.7; }
+  100% { transform: scale(1.6); opacity: 0; }
+}
 
-    .grid { display: grid; gap: 16px; }
-    .metrics { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
-    .panel {
-      background: linear-gradient(180deg, rgba(255,255,255,0.02) 0%, rgba(255,255,255,0) 100%);
-      border: 1px solid rgba(255,255,255,0.06);
-      border-radius: 16px;
-      padding: 16px;
-      position: relative;
-      overflow: hidden;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.35);
-    }
-    .panel::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: radial-gradient(circle at 20% 20%, rgba(88,211,255,0.08), transparent 40%);
-      opacity: 0.6;
-      pointer-events: none;
-    }
-    .panel h3 { margin: 0; font-size: 15px; color: var(--muted); letter-spacing: 0.2px; }
-    .panel .value { margin-top: 12px; font-size: 32px; font-weight: 700; }
-    .trend { display: inline-flex; align-items: center; gap: 6px; padding: 6px 10px; border-radius: 999px; font-size: 13px; font-weight: 600; background: rgba(46, 230, 168, 0.12); color: #9cf2cc; }
-    .trend.down { background: rgba(255, 109, 96, 0.12); color: #ffb5ae; }
+.brand-title {
+  font-size: 20px;
+}
 
-    .section-title { margin: 32px 0 12px; font-size: 18px; letter-spacing: 0.3px; display: flex; align-items: center; gap: 10px; }
-    .section-title span { width: 4px; height: 20px; border-radius: 6px; background: linear-gradient(180deg, var(--primary), var(--secondary)); display: inline-block; }
+.page-nav {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 14px;
+  padding: 6px;
+  width: fit-content;
+}
 
-    .chart-card { padding: 20px; }
+.page-tab {
+  border: none;
+  background: transparent;
+  color: var(--muted);
+  padding: 8px 18px;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 120ms ease, color 120ms ease;
+}
 
-    .usage-grid { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
-    .usage-item { display: flex; flex-direction: column; gap: 8px; padding: 14px; border-radius: 12px; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); }
-    .usage-header { display: flex; justify-content: space-between; align-items: center; font-weight: 600; color: var(--muted); }
-    .progress { height: 8px; border-radius: 999px; background: rgba(255,255,255,0.06); overflow: hidden; }
-    .progress-bar { height: 100%; border-radius: 999px; background: linear-gradient(90deg, var(--primary), var(--secondary)); }
+.page-tab.active {
+  background: linear-gradient(135deg, rgba(88,211,255,0.15), rgba(140,123,255,0.15));
+  color: var(--text);
+}
 
-    .chips { display: flex; flex-wrap: wrap; gap: 8px; }
-    .chip { padding: 6px 10px; border-radius: 10px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.08); color: var(--muted); font-size: 13px; }
+main {
+  padding: 40px 64px 80px;
+  max-width: 1600px;
+  margin: 0 auto;
+}
 
-    .feedback-shell { display: flex; flex-direction: column; gap: 16px; }
-    .feedback-surface { padding: 22px; border-radius: 18px; background: linear-gradient(135deg, rgba(255,255,255,0.04), rgba(255,255,255,0)); border: 1px solid rgba(255,255,255,0.08); box-shadow: 0 24px 80px rgba(0,0,0,0.45); position: relative; overflow: hidden; }
-    .feedback-surface::before { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at 18% 20%, rgba(255,109,96,0.18), transparent 42%), radial-gradient(circle at 82% 28%, rgba(88,211,255,0.12), transparent 38%), radial-gradient(circle at 60% 90%, rgba(140,123,255,0.12), transparent 36%); opacity: 0.9; pointer-events: none; }
-    .feedback-canvas { display: grid; grid-template-columns: 1.05fr 0.95fr 1fr; gap: 18px; position: relative; z-index: 1; }
-    .feedback-col { background: rgba(11,16,33,0.55); border: 1px solid rgba(255,255,255,0.06); border-radius: 16px; padding: 18px; display: flex; flex-direction: column; gap: 12px; backdrop-filter: blur(6px); box-shadow: var(--glow); }
-    .thumb-hero { display: flex; gap: 12px; align-items: center; }
-    .thumb-icon { width: 64px; height: 64px; border-radius: 16px; display: grid; place-items: center; font-size: 32px; background: radial-gradient(circle at 30% 30%, rgba(255,109,96,0.45), rgba(255,109,96,0.18)); border: 1px solid rgba(255,109,96,0.35); box-shadow: 0 16px 40px rgba(255,109,96,0.25); }
-    .eyebrow { text-transform: uppercase; letter-spacing: 1.2px; font-size: 11px; color: #ffb5ae; font-weight: 800; }
-    .feedback-value { font-size: 54px; font-weight: 800; letter-spacing: -0.6px; margin-top: 4px; }
-    .feedback-sub { color: var(--muted); font-weight: 600; }
-    .column-title { font-weight: 800; letter-spacing: 0.4px; color: var(--muted); text-transform: uppercase; font-size: 12px; display: flex; align-items: center; gap: 8px; }
-    .column-title::before { content: ''; width: 8px; height: 8px; border-radius: 50%; background: linear-gradient(135deg, var(--primary), var(--secondary)); box-shadow: 0 0 0 6px rgba(88,211,255,0.12); }
-    .macro-list, .remediation-list { display: flex; flex-direction: column; gap: 10px; }
-    .macro-card, .remediation-card { padding: 12px 14px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.06); background: rgba(255,255,255,0.03); position: relative; overflow: hidden; }
-    .macro-card::after, .remediation-card::after { content: ''; position: absolute; inset: 0; background: linear-gradient(135deg, rgba(88,211,255,0.05), rgba(140,123,255,0.05)); opacity: 0.8; pointer-events: none; }
-    .macro-name { font-weight: 800; letter-spacing: 0.2px; display: flex; align-items: center; gap: 10px; }
-    .swatch { width: 12px; height: 12px; border-radius: 10px; box-shadow: 0 8px 20px rgba(0,0,0,0.22); }
-    .remediation-card { padding-left: 16px; border-left: 3px solid rgba(88,211,255,0.5); }
-    .remediation-text { color: var(--muted); font-weight: 600; line-height: 1.6; }
-    .note { color: var(--muted); font-size: 12px; margin-top: 6px; }
-    @media (max-width: 1080px) { .feedback-canvas { grid-template-columns: 1fr; } }
+.grid {
+  display: grid;
+  gap: 20px;
+}
 
-    .page { display: none; }
-    .page.active { display: block; }
+.metrics {
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+}
 
-    @media (max-width: 960px) {
-      header { padding: 28px 24px 18px; }
-      main { padding: 0 24px 32px; }
-      .top-bar { flex-direction: column; align-items: flex-start; }
-    }
-    @media (max-width: 640px) {
-      .actions { width: 100%; }
-      .btn { flex: 1; text-align: center; }
-      .page-nav { width: 100%; justify-content: space-between; }
-      .page-tab { flex: 1; text-align: center; }
-    }
+/* Economics metrics layout */
+.metrics-economics {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  margin-bottom: 28px;
+}
+
+.panel {
+  background: linear-gradient(180deg, rgba(255,255,255,0.02) 0%, rgba(255,255,255,0) 100%);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 20px;
+  padding: 24px 28px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.35);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.panel:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 24px 70px rgba(0,0,0,0.45);
+}
+
+.panel::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 20% 20%, rgba(88,211,255,0.08), transparent 40%);
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.panel h3 {
+  margin: 0;
+  font-size: 13px;
+  color: var(--muted);
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.panel .value {
+  margin-top: 16px;
+  font-size: 36px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+}
+
+.section-title {
+  margin: 48px 0 20px;
+  font-size: 20px;
+  letter-spacing: 0.3px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-weight: 600;
+}
+
+.section-title span {
+  width: 5px;
+  height: 24px;
+  border-radius: 6px;
+  background: linear-gradient(180deg, var(--primary), var(--secondary));
+  display: inline-block;
+}
+
+.chart-card {
+  padding: 28px;
+}
+
+.feedback-shell {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.feedback-surface {
+  padding: 32px;
+  border-radius: 24px;
+  background: linear-gradient(135deg, rgba(255,255,255,0.04), rgba(255,255,255,0));
+  border: 1px solid rgba(255,255,255,0.08);
+  box-shadow: 0 24px 80px rgba(0,0,0,0.45);
+  position: relative;
+  overflow: hidden;
+}
+
+.feedback-surface::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 18% 20%, rgba(255,109,96,0.18), transparent 42%),
+    radial-gradient(circle at 82% 28%, rgba(88,211,255,0.12), transparent 38%),
+    radial-gradient(circle at 60% 90%, rgba(140,123,255,0.12), transparent 36%);
+  opacity: 0.9;
+  pointer-events: none;
+}
+
+.feedback-canvas {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 24px;
+  position: relative;
+  z-index: 1;
+}
+
+.feedback-col {
+  background: rgba(11,16,33,0.7);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 20px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  backdrop-filter: blur(6px);
+  box-shadow: var(--glow);
+}
+
+.thumb-hero {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+
+.thumb-icon {
+  width: 72px;
+  height: 72px;
+  border-radius: 20px;
+  display: grid;
+  place-items: center;
+  font-size: 36px;
+  background: radial-gradient(circle at 30% 30%, rgba(255,109,96,0.45), rgba(255,109,96,0.18));
+  border: 1px solid rgba(255,109,96,0.35);
+  box-shadow: 0 16px 40px rgba(255,109,96,0.25);
+}
+
+.eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-size: 10px;
+  color: #ffb5ae;
+  font-weight: 800;
+}
+
+.feedback-value {
+  font-size: 40px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  margin-top: 4px;
+}
+
+.feedback-sub {
+  color: var(--muted);
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.column-title {
+  font-weight: 800;
+  letter-spacing: 0.4px;
+  color: var(--muted);
+  text-transform: uppercase;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.column-title::before {
+  content: '';
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  box-shadow: 0 0 0 5px rgba(88,211,255,0.12);
+}
+
+.column-title-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.pair-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.pair-row {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 16px;
+  align-items: center;
+  padding: 16px 18px;
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,0.06);
+  background: rgba(255,255,255,0.03);
+  position: relative;
+  overflow: hidden;
+}
+
+.pair-row::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(88,211,255,0.05), rgba(140,123,255,0.05));
+  opacity: 0.8;
+  pointer-events: none;
+}
+
+.pair-left,
+.pair-right {
+  position: relative;
+  z-index: 1;
+}
+
+.macro-name {
+  font-weight: 800;
+  letter-spacing: 0.3px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 15px;
+}
+
+.swatch {
+  width: 13px;
+  height: 13px;
+  border-radius: 10px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.22);
+}
+
+.remediation-text {
+  color: var(--muted);
+  font-weight: 500;
+  line-height: 1.6;
+  font-size: 14px;
+}
+
+.pair-hallu { border-color: rgba(255,109,96,0.6); }
+.pair-hallu .swatch { background: #ff6d60; }
+
+.pair-intent { border-color: rgba(88,211,255,0.7); }
+.pair-intent .swatch { background: #58d3ff; }
+
+.pair-latency { border-color: rgba(140,123,255,0.7); }
+.pair-latency .swatch { background: #8c7bff; }
+
+.pair-style { border-color: rgba(46,230,168,0.7); }
+.pair-style .swatch { background: #2ee6a8; }
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.chip {
+  padding: 10px 16px;
+  border-radius: 12px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.08);
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.page {
+  display: none;
+}
+
+.page.active {
+  display: block;
+}
+
+@media (max-width: 960px) {
+  header { padding: 24px 32px 20px; }
+  main { padding: 32px 32px 64px; }
+  .feedback-canvas { grid-template-columns: 1fr; }
+  .section-title { margin: 36px 0 16px; }
+  .metrics-economics {
+    grid-template-columns: 1fr;
+    margin-bottom: 24px;
+  }
+}
+
+@media (max-width: 640px) {
+  .top-bar { justify-content: center; }
+  .page-nav { width: 100%; justify-content: center; }
+  .page-tab { flex: 1; text-align: center; }
+}
   </style>
 </head>
 <body>
@@ -204,18 +434,11 @@
     <div class="top-bar">
       <div class="brand">
         <div class="pulse"></div>
-        <div>
-          <div style="color: var(--muted); font-size: 12px;">Realtime adoption</div>
-          <div style="font-size: 18px;">Conversation AI Command Center</div>
-        </div>
-      </div>
-      <div class="actions">
-        <button class="btn secondary" onclick="refreshData()">Aggiorna snapshot</button>
-        <button class="btn">Esporta report</button>
+        <div class="brand-title">MIA Monitoraggio Adoption</div>
       </div>
     </div>
     <div class="page-nav">
-      <button class="page-tab active" data-target="qualitativa">Analisi qualitativa</button>
+      <button class="page-tab active" data-target="qualitativa">Adoption</button>
       <button class="page-tab" data-target="feedback">Feedback analysis</button>
       <button class="page-tab" data-target="economics">Economics</button>
     </div>
@@ -226,157 +449,153 @@
       <div class="grid metrics">
         <div class="panel">
           <h3>Utenti unici</h3>
-          <div class="value" id="usersValue">12.430</div>
-          <div class="trend" id="usersTrend">+8,2% vs 7g</div>
+          <div class="value" id="usersValue">445</div>
         </div>
         <div class="panel">
           <h3>Interazioni</h3>
-          <div class="value" id="interactionsValue">184.290</div>
-          <div class="trend" id="interactionsTrend">+5,4% vs 7g</div>
+          <div class="value" id="interactionsValue">5900</div>
         </div>
         <div class="panel">
           <h3>Sessioni</h3>
-          <div class="value" id="sessionsValue">42.780</div>
-          <div class="trend" id="sessionsTrend">+3,1% vs 7g</div>
-        </div>
-        <div class="panel">
-          <h3>Tempo medio sessione</h3>
-          <div class="value" id="avgSessionValue">9m 12s</div>
-          <div class="trend" id="avgSessionTrend">+0,6m vs 7g</div>
-        </div>
-        <div class="panel">
-          <h3>Tasso di ritorno</h3>
-          <div class="value" id="returnRateValue">37,4%</div>
-          <div class="trend" id="returnRateTrend">+2,1 pt vs 7g</div>
+          <div class="value" id="sessionsValue">949</div>
         </div>
       </div>
 
-      <div class="section-title"><span></span>Andamento settimanale</div>
-      <div class="grid" style="grid-template-columns: 2fr 1fr; gap: 16px; align-items: stretch;">
-        <div class="panel chart-card">
-          <canvas id="trendChart" height="120"></canvas>
-        </div>
-        <div class="panel chart-card">
-          <h3>Pulse qualitativo</h3>
-          <div class="chips" style="margin-top: 8px;">
-            <div class="chip">Top intent: briefing prodotto</div>
-            <div class="chip">Tono: 74% positivo</div>
-            <div class="chip">Escalation umane: 3,8%</div>
-            <div class="chip">Risposte 1st try: 86%</div>
+```
+  <div class="section-title"><span></span>Andamento settimanale</div>
+  <div class="grid" style="grid-template-columns: 2fr 1fr; gap: 20px; align-items: stretch;">
+    <div class="panel chart-card">
+      <canvas id="trendChart" height="180"></canvas>
+    </div>
+    <div class="panel chart-card">
+      <h3>Tipologie di utilizzo</h3>
+      <canvas id="usagePieChart" height="180"></canvas>
+    </div>
+  </div>
+</section>
+
+<section class="page" id="page-feedback">
+  <div class="section-title"><span></span>Feedback analysis</div>
+  <div class="feedback-shell">
+    <div class="feedback-surface">
+      <div class="feedback-canvas">
+        <div class="feedback-col">
+          <div class="thumb-hero">
+            <div class="thumb-icon">👎</div>
+            <div>
+              <div class="eyebrow">Thumbs down</div>
+              <div class="feedback-value">48</div>
+              <div class="feedback-sub">pollici in giù su 5900 interazioni</div>
+            </div>
           </div>
         </div>
-      </div>
 
-      <div class="section-title"><span></span>Insights rapidi</div>
-      <div class="chips">
-        <div class="chip">Peak: martedì 10:00-12:00</div>
-        <div class="chip">42% delle ricerche includono fonti web</div>
-        <div class="chip">Tempo medio sessione: 9m 12s</div>
-        <div class="chip">Top team: Product, Sales Enablement</div>
-        <div class="chip">Conversazioni audio +31% WoW</div>
-      </div>
-    </section>
-
-    <section class="page" id="page-feedback">
-      <div class="section-title"><span></span>Feedback analysis</div>
-      <div class="feedback-shell">
-        <div class="feedback-surface">
-          <div class="feedback-canvas">
-            <div class="feedback-col">
-              <div class="thumb-hero">
-                <div class="thumb-icon">👎</div>
-                <div>
-                  <div class="eyebrow">Thumbs down</div>
-                  <div class="feedback-value">1.420</div>
-                  <div class="feedback-sub">pollici in giù su 184.290 interazioni</div>
+        <div class="feedback-col">
+          <div class="column-title-row">
+            <div class="column-title">Macrocategorie di errore</div>
+            <div class="column-title">Remediation action</div>
+          </div>
+          <div class="pair-list">
+            <div class="pair-row pair-hallu">
+              <div class="pair-left">
+                <div class="macro-name">
+                  <div class="swatch"></div>
+                  Allucinazione su feature di creazione file
                 </div>
+              </div>
+              <div class="pair-right">
+                <div class="remediation-text">Rinforzo sul prompt di sistema di MIA</div>
               </div>
             </div>
 
-            <div class="feedback-col">
-              <div class="column-title">Macrocategorie di errore</div>
-              <div class="macro-list">
-                <div class="macro-card">
-                  <div class="macro-name"><div class="swatch" style="background:#ff6d60;"></div>Hallucinatione dati</div>
+            <div class="pair-row pair-intent">
+              <div class="pair-left">
+                <div class="macro-name">
+                  <div class="swatch"></div>
+                  Bug di risposta con errore di sistema
                 </div>
-                <div class="macro-card">
-                  <div class="macro-name"><div class="swatch" style="background:#58d3ff;"></div>Incomprensione intenti</div>
-                </div>
-                <div class="macro-card">
-                  <div class="macro-name"><div class="swatch" style="background:#8c7bff;"></div>Latency percepita</div>
-                </div>
-                <div class="macro-card">
-                  <div class="macro-name"><div class="swatch" style="background:#2ee6a8;"></div>Stile non conforme</div>
-                </div>
+              </div>
+              <div class="pair-right">
+                <div class="remediation-text">Bug corretto e portato in produzione</div>
               </div>
             </div>
 
-            <div class="feedback-col">
-              <div class="column-title">Remediation action</div>
-              <div class="remediation-list">
-                <div class="remediation-card">
-                  <div class="remediation-text">Raffinare grounding con fonti interne e reranker semantico.</div>
+            <div class="pair-row pair-latency">
+              <div class="pair-left">
+                <div class="macro-name">
+                  <div class="swatch"></div>
+                  Domande sulla Intranet
                 </div>
-                <div class="remediation-card">
-                  <div class="remediation-text">Ampliare training set conversazionale e prompt di disambiguazione.</div>
+              </div>
+              <div class="pair-right">
+                <div class="remediation-text">Rinforzo sul prompt di sistema</div>
+              </div>
+            </div>
+
+            <div class="pair-row pair-style">
+              <div class="pair-left">
+                <div class="macro-name">
+                  <div class="swatch"></div>
+                  Elaborazione File Excel
                 </div>
-                <div class="remediation-card">
-                  <div class="remediation-text">Cache sugli intenti frequenti e parallelizzazione retrieval.</div>
-                </div>
-                <div class="remediation-card">
-                  <div class="remediation-text">Policy di tono pre-compilate e controllo finale sul response planner.</div>
-                </div>
+              </div>
+              <div class="pair-right">
+                <div class="remediation-text">Enhancing della feature ongoing</div>
               </div>
             </div>
           </div>
         </div>
-      </div>
-    </section>
 
-    <section class="page" id="page-economics">
-      <div class="section-title"><span></span>Economics</div>
-      <div class="grid metrics">
-        <div class="panel">
-          <h3>Costi infrastruttura</h3>
-          <div class="value" id="infraCosts">€ 24.800</div>
-          <div class="trend" id="infraCostsTrend">+3,2% vs 7g</div>
-        </div>
-        <div class="panel">
-          <h3>Costi variabili</h3>
-          <div class="value" id="variableCosts">€ 12.650</div>
-          <div class="trend" id="variableCostsTrend">-1,4% vs 7g</div>
-          <div class="note">Costo per token modelli</div>
-        </div>
-        <div class="panel">
-          <h3>Costo medio LLM</h3>
-          <div class="value" id="avgLLMCost">€ 0,018</div>
-          <div class="trend" id="avgLLMCostTrend">+0,3% vs 7g</div>
-        </div>
       </div>
+    </div>
+  </div>
+</section>
 
-      <div class="grid" style="grid-template-columns: 1.2fr 1fr; gap: 16px; align-items: stretch;">
-        <div class="panel chart-card">
-          <h3>Andamento costi</h3>
-          <canvas id="costTrendChart" height="200"></canvas>
-        </div>
-        <div class="panel chart-card">
-          <h3>Ripartizione costo per modello</h3>
-          <canvas id="modelCostChart" height="200"></canvas>
-        </div>
-      </div>
-      
-      <div class="section-title"><span></span>Driver di spesa</div>
-      <div class="chips">
-        <div class="chip">Caching di risposta attivo su top intent</div>
-        <div class="chip">Accorpamento richieste batch per orchestrazione</div>
-        <div class="chip">Monitoraggio real-time dei costi per stream</div>
-      </div>
-    </section>
+<section class="page" id="page-economics">
+  <div class="section-title"><span></span>Economics</div>
+  <div class="grid metrics metrics-economics">
+    <div class="panel">
+      <h3>Costi infrastruttura</h3>
+      <div class="value" id="infraCosts">$ 500 (monthly atteso $ 2000)</div>
+    </div>
+    <div class="panel">
+      <h3>Costi variabili</h3>
+      <div class="value" id="variableCosts">$ 40</div>
+    </div>
+    <div class="panel">
+      <h3>Costo medio LLM per 1k token</h3>
+      <div class="value" id="avgLLMCost">$ 0.0050</div>
+    </div>
+  </div>
+
+  <div class="grid" style="grid-template-columns: 1.5fr 1fr; gap: 20px; align-items: stretch;">
+    <div class="panel chart-card">
+      <h3 style="margin-bottom: 20px;">Andamento costi</h3>
+      <canvas id="costTrendChart" height="240"></canvas>
+    </div>
+    <div class="panel chart-card">
+      <h3 style="margin-bottom: 20px;">Ripartizione costo per modello</h3>
+      <canvas id="modelCostChart" height="240"></canvas>
+    </div>
+  </div>
+  
+  <div class="section-title"><span></span>Driver di spesa</div>
+  <div class="chips">
+    <div class="chip">Caching di risposta attivo su top intent</div>
+    <div class="chip">Accorpamento richieste batch per orchestrazione</div>
+    <div class="chip">Monitoraggio real-time dei costi per stream</div>
+  </div>
+</section>
+```
+
   </main>
 
   <script>
+    Chart.register(ChartDataLabels);
+
     const pages = document.querySelectorAll('.page');
     const tabs = document.querySelectorAll('.page-tab');
+
     tabs.forEach(tab => {
       tab.addEventListener('click', () => switchPage(tab.dataset.target));
     });
@@ -387,236 +606,216 @@
     }
 
     const trendCtx = document.getElementById('trendChart');
+    const usagePieCtx = document.getElementById('usagePieChart');
     const costTrendCtx = document.getElementById('costTrendChart');
     const modelCostCtx = document.getElementById('modelCostChart');
 
-    // Register Chart.js defaults and safely add the box/violin plugin if the CDN export is available.
-    Chart.register(...Chart.registerables);
-    const boxPlugin = window['chartjs-chart-box-and-violin-plot'];
-    if (boxPlugin?.BoxPlotController) {
-      const { BoxPlotController, ViolinPlotController, BoxPlotElement, ViolinPlotElement } = boxPlugin;
-      Chart.register(BoxPlotController, ViolinPlotController, BoxPlotElement, ViolinPlotElement);
-    }
-    Chart.defaults.animation = false;
+    const labels = ['Mar', 'Mer', 'Gio'];
+    const baseTrend = [120, 145, 162];
+    const baseSessions = [32, 36, 34];
 
-    const labels = ['Lun', 'Mar', 'Mer', 'Gio', 'Ven', 'Sab', 'Dom'];
-    const weeklyInteractionDistributions = [
-      [110, 124, 138, 152, 168],
-      [120, 134, 148, 162, 180],
-      [116, 130, 144, 158, 172],
-      [125, 140, 155, 170, 186],
-      [130, 145, 160, 176, 192],
-      [128, 142, 158, 174, 190],
-      [135, 150, 166, 182, 198]
-    ];
-    const weeklySessionDistributions = [
-      [30, 32, 34, 36, 38],
-      [32, 34, 36, 38, 40],
-      [31, 33, 35, 37, 39],
-      [33, 35, 37, 39, 41],
-      [34, 36, 38, 40, 42],
-      [35, 37, 39, 41, 43],
-      [36, 38, 40, 42, 44]
-    ];
+    const gradient = trendCtx.getContext('2d').createLinearGradient(0, 0, 0, 260);
+    gradient.addColorStop(0, 'rgba(88, 211, 255, 0.35)');
+    gradient.addColorStop(1, 'rgba(88, 211, 255, 0)');
 
     const trendChart = new Chart(trendCtx, {
-      type: 'boxplot',
+      type: 'line',
       data: {
         labels,
         datasets: [
           {
             label: 'Interazioni (k)',
-            backgroundColor: 'rgba(88, 211, 255, 0.25)',
+            data: baseTrend,
             borderColor: '#58d3ff',
-            borderWidth: 1.8,
-            outlierRadius: 3,
-            itemRadius: 0,
-            data: weeklyInteractionDistributions
+            backgroundColor: gradient,
+            fill: true,
+            tension: 0.35,
+            borderWidth: 2.4,
+            pointRadius: 4,
+            pointBackgroundColor: '#0b1021',
+            pointBorderColor: '#58d3ff'
           },
           {
             label: 'Sessioni (k)',
-            backgroundColor: 'rgba(140, 123, 255, 0.25)',
+            data: baseSessions,
             borderColor: '#8c7bff',
-            borderWidth: 1.6,
-            outlierRadius: 3,
-            itemRadius: 0,
-            data: weeklySessionDistributions
+            backgroundColor: 'transparent',
+            fill: false,
+            tension: 0.35,
+            borderWidth: 2,
+            pointRadius: 3,
+            pointBackgroundColor: '#8c7bff',
+            pointBorderColor: '#8c7bff'
           }
         ]
       },
       options: {
         animation: false,
-        transitions: { active: { animation: { duration: 0 } } },
         plugins: {
-          legend: { labels: { color: '#d9e1f7' }, position: 'top' },
+          legend: { labels: { color: '#d9e1f7', font: { size: 11 } }, position: 'top' },
           tooltip: {
             backgroundColor: '#11172e',
             borderColor: 'rgba(255,255,255,0.08)',
             borderWidth: 1,
-            padding: 12,
+            padding: 10,
             titleColor: '#fff',
             bodyColor: '#dfe7ff'
-          }
+          },
+          datalabels: { display: false }
         },
         scales: {
-          x: { ticks: { color: '#9aa7c7' }, grid: { color: 'rgba(255,255,255,0.04)' } },
-          y: { ticks: { color: '#9aa7c7' }, grid: { color: 'rgba(255,255,255,0.04)' }, beginAtZero: true }
+          x: { ticks: { color: '#9aa7c7', font: { size: 11 } }, grid: { color: 'rgba(255,255,255,0.04)' } },
+          y: { ticks: { color: '#9aa7c7', font: { size: 11 } }, grid: { color: 'rgba(255,255,255,0.04)' }, beginAtZero: true }
         }
       }
     });
 
-    const costLabels = ['Lun', 'Mar', 'Mer', 'Gio', 'Ven', 'Sab', 'Dom'];
-    const baseCostDistributions = [
-      [7800, 8200, 8600, 9100, 9600],
-      [7600, 8000, 8400, 8800, 9200],
-      [8100, 8500, 8900, 9300, 9700],
-      [8000, 8300, 8700, 9100, 9500],
-      [7900, 8250, 8650, 9050, 9450],
-      [7700, 8100, 8500, 8900, 9300],
-      [7500, 7900, 8300, 8700, 9100]
-    ];
+    const usageData = [55, 19, 5, 3, 4, 3, 2, 7];
 
-    const costCtx = costTrendCtx.getContext('2d');
-    const costGradient = costCtx.createLinearGradient(0, 0, 0, 240);
-    costGradient.addColorStop(0, 'rgba(46, 230, 168, 0.35)');
-    costGradient.addColorStop(1, 'rgba(46, 230, 168, 0)');
-
-    const baseCostSeries = baseCostDistributions.map(dist => dist[2]);
-
-    const costTrendChart = new Chart(costTrendCtx, {
-      type: 'line',
+    const usagePieChart = new Chart(usagePieCtx, {
+      type: 'doughnut',
       data: {
-        labels: costLabels,
+        labels: [
+          'Generiche',
+          'Interrogazione documenti',
+          'Ricerca web',
+          'Traduzione',
+          'Drafting',
+          'Summarization',
+          'Comparazione',
+          'Generazione immagini',
+        ],
         datasets: [{
-          label: 'Costi giornalieri (€)',
-          data: baseCostSeries,
-          borderColor: '#2ee6a8',
-          backgroundColor: costGradient,
-          borderWidth: 2,
-          fill: true,
-          tension: 0.32,
-          pointBackgroundColor: '#0b1021',
-          pointBorderColor: '#2ee6a8',
-          pointRadius: 5,
-          pointHoverRadius: 6
+          data: usageData,
+          backgroundColor: [
+            '#58d3ff',
+            '#8c7bff',
+            '#2ee6a8',
+            '#ffae63',
+            '#ff6d60',
+            '#7ce7c7',
+            '#ffc764',
+            '#b38cff'
+          ],
+          borderWidth: 1,
+          borderColor: '#0b1021'
         }]
       },
       options: {
+        cutout: '55%',
         plugins: {
-          legend: { labels: { color: '#d9e1f7' } },
-          tooltip: {
-            backgroundColor: '#11172e',
-            borderColor: 'rgba(255,255,255,0.08)',
-            borderWidth: 1,
-            padding: 12,
-            titleColor: '#fff',
-            bodyColor: '#dfe7ff',
-            callbacks: {
-              label: context => ` € ${context.parsed.y.toLocaleString('it-IT')}`
+          legend: {
+            position: 'bottom',
+            labels: { color: '#d9e1f7', boxWidth: 12, padding: 8, font: { size: 11 } }
+          },
+          tooltip: { enabled: false },
+          datalabels: {
+            color: '#ffffff',
+            font: { size: 11, weight: '600' },
+            formatter: function(value, ctx) {
+              const dataArr = ctx.chart.data.datasets[0].data;
+              const total = dataArr.reduce((a, b) => a + b, 0);
+              const pct = value / total * 100;
+              return pct.toFixed(0) + '%';
             }
-          }
-        },
-        scales: {
-          x: { ticks: { color: '#9aa7c7' }, grid: { color: 'rgba(255,255,255,0.04)' } },
-          y: {
-            ticks: {
-              color: '#9aa7c7',
-              callback: value => `€ ${value.toLocaleString('it-IT')}`
-            },
-            grid: { color: 'rgba(255,255,255,0.04)' },
-            beginAtZero: false
           }
         }
       }
     });
+
+    const costLabels = ['Mar', 'Mer', 'Gio', 'Totale'];
+    const baseCosts = [8200, 9100, 8700];
+
+    const costTrendChart = new Chart(costTrendCtx, {
+      type: 'bar',
+      data: {
+        labels: costLabels,
+        datasets: [{
+          label: 'Costi (€)',
+          data: [...baseCosts, baseCosts.reduce((a, b) => a + b, 0)],
+          backgroundColor: '#2ee6a8',
+          borderColor: '#0b1021',
+          borderWidth: 1.2,
+          borderRadius: 8
+        }]
+      },
+      options: {
+        animation: false,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            backgroundColor: '#11172e',
+            titleColor: '#fff',
+            bodyColor: '#dfe7ff',
+            padding: 12,
+            borderColor: 'rgba(255,255,255,0.08)',
+            borderWidth: 1
+          },
+          datalabels: { display: false }
+        },
+        scales: {
+          x: { 
+            ticks: { color: '#9aa7c7', font: { size: 12 } }, 
+            grid: { color: 'rgba(255,255,255,0.04)' } 
+          },
+          y: { 
+            ticks: { 
+              color: '#9aa7c7', 
+              font: { size: 12 },
+              callback: function(value) {
+                return '€ ' + value.toLocaleString();
+              }
+            }, 
+            grid: { color: 'rgba(255,255,255,0.06)' }, 
+            beginAtZero: true 
+          }
+        }
+      }
+    });
+
+    const modelCostData = [39, 42, 11, 7, 1];
 
     const modelCostChart = new Chart(modelCostCtx, {
       type: 'doughnut',
       data: {
         labels: [
           'gpt-4.1-mini',
-          'azure_websearch_gpt-4.1',
           'gpt-4.1',
           'gpt-image-1-mini',
           'text-embedding-ada-002',
           'whisper'
         ],
         datasets: [{
-          data: [26, 18, 22, 12, 14, 8],
+          data: modelCostData,
           backgroundColor: ['#58d3ff', '#8c7bff', '#2ee6a8', '#ffae63', '#ff6d60', '#7ce7c7'],
           borderWidth: 1,
           borderColor: '#0b1021'
         }]
       },
       options: {
+        animation: false,
         cutout: '60%',
         plugins: {
-          legend: { position: 'bottom', labels: { color: '#d9e1f7', boxWidth: 12, padding: 14 } },
-          tooltip: {
-            backgroundColor: '#11172e',
-            borderColor: 'rgba(255,255,255,0.08)',
-            borderWidth: 1,
-            padding: 12,
-            titleColor: '#fff',
-            bodyColor: '#dfe7ff'
+          legend: {
+            position: 'bottom',
+            labels: { color: '#d9e1f7', boxWidth: 12, padding: 8, font: { size: 11 } }
+          },
+          tooltip: { enabled: false },
+          datalabels: {
+            color: '#ffffff',
+            font: { size: 11, weight: '600' },
+            formatter: function(value, ctx) {
+              const dataArr = ctx.chart.data.datasets[0].data;
+              const total = dataArr.reduce((a, b) => a + b, 0);
+              const pct = value / total * 100;
+              return pct.toFixed(0) + '%';
+            }
           }
         }
       }
     });
-
-    function refreshData() {
-      const delta = () => (Math.random() * 8 - 4).toFixed(1);
-      const percentDelta = () => (Math.random() * 4 - 2).toFixed(1);
-
-      const updateMetric = (id, base, formatter = v => v.toLocaleString('it-IT')) => {
-        const variation = delta();
-        const value = Math.max(base + Number(variation) * 120, base * 0.9);
-        document.getElementById(id).textContent = formatter(value);
-        return variation;
-      };
-
-      const usersVar = updateMetric('usersValue', 12430);
-      const interactionsVar = updateMetric('interactionsValue', 184290);
-      const sessionsVar = updateMetric('sessionsValue', 42780);
-
-      const avgSessionBase = 9.2 + Number(percentDelta());
-      document.getElementById('avgSessionValue').textContent = `${avgSessionBase.toFixed(1)}m`;
-      const returnRateBase = Math.max(30, Math.min(50, 37.4 + Number(percentDelta())));
-      document.getElementById('returnRateValue').textContent = `${returnRateBase.toFixed(1)}%`;
-
-      const setTrend = (id, value, suffix = '% vs 7g') => {
-        const el = document.getElementById(id);
-        const positive = parseFloat(value) >= 0;
-        el.textContent = `${positive ? '+' : ''}${value}${suffix}`;
-        el.className = 'trend ' + (positive ? '' : 'down');
-      };
-
-      setTrend('usersTrend', usersVar);
-      setTrend('interactionsTrend', interactionsVar);
-      setTrend('sessionsTrend', sessionsVar);
-      setTrend('avgSessionTrend', percentDelta(), 'm vs 7g');
-      setTrend('returnRateTrend', percentDelta(), ' pt vs 7g');
-
-      const infraVar = updateMetric('infraCosts', 24800, v => `€ ${Math.round(v).toLocaleString('it-IT')}`);
-      const variableVar = updateMetric('variableCosts', 12650, v => `€ ${Math.round(v).toLocaleString('it-IT')}`);
-      const avgLLMVar = (Math.random() * 0.6 - 0.3).toFixed(3);
-      document.getElementById('avgLLMCost').textContent = `€ ${(0.018 + Number(avgLLMVar) / 100).toFixed(3)}`;
-
-      setTrend('infraCostsTrend', infraVar);
-      setTrend('variableCostsTrend', variableVar);
-      setTrend('avgLLMCostTrend', (avgLLMVar * 100).toFixed(1));
-
-      const costNoise = baseCostDistributions
-        .map(dist => dist.map(v => Math.max(6000, v + Number(delta()) * 60)))
-        .map(dist => Math.round(dist.reduce((a, b) => a + b, 0) / dist.length));
-      costTrendChart.data.datasets[0].data = costNoise;
-      costTrendChart.update();
-
-      const modelNoise = modelCostChart.data.datasets[0].data.map(v => Math.max(4, v + Number(percentDelta())));
-      const total = modelNoise.reduce((a,b) => a + b, 0);
-      modelCostChart.data.datasets[0].data = modelNoise.map(v => Math.round((v / total) * 100));
-      modelCostChart.update();
-    }
   </script>
+
 </body>
 </html>
