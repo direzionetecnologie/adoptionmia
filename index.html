@@ -393,45 +393,53 @@
     Chart.defaults.animation = false;
 
     const labels = ['Lun', 'Mar', 'Mer', 'Gio', 'Ven', 'Sab', 'Dom'];
-    const baseTrend = [120, 145, 162, 150, 178, 190, 205];
-    const baseSessions = [32, 36, 34, 35, 37, 40, 43];
-
-    const gradient = trendCtx.getContext('2d').createLinearGradient(0, 0, 0, 220);
-    gradient.addColorStop(0, 'rgba(88, 211, 255, 0.35)');
-    gradient.addColorStop(1, 'rgba(88, 211, 255, 0)');
+    const weeklyInteractionDistributions = [
+      [110, 124, 138, 152, 168],
+      [120, 134, 148, 162, 180],
+      [116, 130, 144, 158, 172],
+      [125, 140, 155, 170, 186],
+      [130, 145, 160, 176, 192],
+      [128, 142, 158, 174, 190],
+      [135, 150, 166, 182, 198]
+    ];
+    const weeklySessionDistributions = [
+      [30, 32, 34, 36, 38],
+      [32, 34, 36, 38, 40],
+      [31, 33, 35, 37, 39],
+      [33, 35, 37, 39, 41],
+      [34, 36, 38, 40, 42],
+      [35, 37, 39, 41, 43],
+      [36, 38, 40, 42, 44]
+    ];
 
     const trendChart = new Chart(trendCtx, {
-      type: 'line',
+      type: 'boxplot',
       data: {
         labels,
         datasets: [
           {
             label: 'Interazioni (k)',
-            data: baseTrend,
+            backgroundColor: 'rgba(88, 211, 255, 0.25)',
             borderColor: '#58d3ff',
-            backgroundColor: gradient,
-            fill: true,
-            tension: 0.35,
-            borderWidth: 2.4,
-            pointRadius: 4,
-            pointBackgroundColor: '#0b1021',
-            pointBorderColor: '#58d3ff'
+            borderWidth: 1.8,
+            outlierRadius: 3,
+            itemRadius: 0,
+            data: weeklyInteractionDistributions
           },
           {
             label: 'Sessioni (k)',
-            data: baseSessions,
+            backgroundColor: 'rgba(140, 123, 255, 0.25)',
             borderColor: '#8c7bff',
-            backgroundColor: 'transparent',
-            fill: false,
-            tension: 0.35,
-            borderWidth: 2,
-            pointRadius: 3,
-            pointBackgroundColor: '#8c7bff',
-            pointBorderColor: '#8c7bff'
+            borderWidth: 1.6,
+            outlierRadius: 3,
+            itemRadius: 0,
+            data: weeklySessionDistributions
           }
         ]
       },
       options: {
+        animation: false,
+        transitions: { active: { animation: { duration: 0 } } },
         plugins: {
           legend: { labels: { color: '#d9e1f7' }, position: 'top' },
           tooltip: {
