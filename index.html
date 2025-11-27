@@ -469,35 +469,56 @@
       [7500, 7900, 8300, 8700, 9100]
     ];
 
+    const costCtx = costTrendCtx.getContext('2d');
+    const costGradient = costCtx.createLinearGradient(0, 0, 0, 240);
+    costGradient.addColorStop(0, 'rgba(46, 230, 168, 0.35)');
+    costGradient.addColorStop(1, 'rgba(46, 230, 168, 0)');
+
+    const baseCostSeries = baseCostDistributions.map(dist => dist[2]);
+
     const costTrendChart = new Chart(costTrendCtx, {
-      type: 'boxplot',
+      type: 'line',
       data: {
         labels: costLabels,
         datasets: [{
           label: 'Costi giornalieri (€)',
-          backgroundColor: 'rgba(46, 230, 168, 0.25)',
+          data: baseCostSeries,
           borderColor: '#2ee6a8',
-          borderWidth: 1.8,
-          outlierRadius: 3,
-          itemRadius: 0,
-          data: baseCostDistributions
+          backgroundColor: costGradient,
+          borderWidth: 2,
+          fill: true,
+          tension: 0.32,
+          pointBackgroundColor: '#0b1021',
+          pointBorderColor: '#2ee6a8',
+          pointRadius: 5,
+          pointHoverRadius: 6
         }]
       },
       options: {
         plugins: {
-          legend: { display: false },
+          legend: { labels: { color: '#d9e1f7' } },
           tooltip: {
             backgroundColor: '#11172e',
             borderColor: 'rgba(255,255,255,0.08)',
             borderWidth: 1,
             padding: 12,
             titleColor: '#fff',
-            bodyColor: '#dfe7ff'
+            bodyColor: '#dfe7ff',
+            callbacks: {
+              label: context => ` € ${context.parsed.y.toLocaleString('it-IT')}`
+            }
           }
         },
         scales: {
           x: { ticks: { color: '#9aa7c7' }, grid: { color: 'rgba(255,255,255,0.04)' } },
-          y: { ticks: { color: '#9aa7c7' }, grid: { color: 'rgba(255,255,255,0.04)' }, beginAtZero: true }
+          y: {
+            ticks: {
+              color: '#9aa7c7',
+              callback: value => `€ ${value.toLocaleString('it-IT')}`
+            },
+            grid: { color: 'rgba(255,255,255,0.04)' },
+            beginAtZero: false
+          }
         }
       }
     });
@@ -578,7 +599,9 @@
       setTrend('variableCostsTrend', variableVar);
       setTrend('avgLLMCostTrend', (avgLLMVar * 100).toFixed(1));
 
-      const costNoise = baseCostDistributions.map(dist => dist.map(v => Math.max(6000, v + Number(delta()) * 60)));
+      const costNoise = baseCostDistributions
+        .map(dist => dist.map(v => Math.max(6000, v + Number(delta()) * 60)))
+        .map(dist => Math.round(dist.reduce((a, b) => a + b, 0) / dist.length));
       costTrendChart.data.datasets[0].data = costNoise;
       costTrendChart.update();
 
