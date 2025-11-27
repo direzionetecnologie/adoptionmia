@@ -91,7 +91,7 @@
       box-shadow: var(--glow);
       transition: transform 120ms ease, box-shadow 120ms ease;
     }
-    .btn:hover { transform: translateY(-1px) scale(1.01); box-shadow: 0 10px 35px rgba(140, 123, 255, 0.25); }
+    .btn:hover { transform: translateY(-1px); box-shadow: 0 10px 35px rgba(140, 123, 255, 0.25); }
     .btn.secondary {
       background: transparent;
       color: var(--text);
@@ -450,29 +450,29 @@
       }
     });
 
-    const costLabels = ['Mar', 'Mer', 'Gio', 'Totale'];
-    const baseCosts = [8200, 9100, 8700];
-    const baseTotal = baseCosts.reduce((a, b) => a + b, 0);
-
-    const costGradient = costTrendCtx.getContext('2d').createLinearGradient(0, 0, 0, 220);
-    costGradient.addColorStop(0, 'rgba(46, 230, 168, 0.35)');
-    costGradient.addColorStop(1, 'rgba(46, 230, 168, 0)');
+    const costLabels = ['Lun', 'Mar', 'Mer', 'Gio', 'Ven', 'Sab', 'Dom'];
+    const baseCostDistributions = [
+      [7800, 8200, 8600, 9100, 9600],
+      [7600, 8000, 8400, 8800, 9200],
+      [8100, 8500, 8900, 9300, 9700],
+      [8000, 8300, 8700, 9100, 9500],
+      [7900, 8250, 8650, 9050, 9450],
+      [7700, 8100, 8500, 8900, 9300],
+      [7500, 7900, 8300, 8700, 9100]
+    ];
 
     const costTrendChart = new Chart(costTrendCtx, {
-      type: 'line',
+      type: 'boxplot',
       data: {
         labels: costLabels,
         datasets: [{
-          label: 'Costi (€)',
-          data: [...baseCosts, baseTotal],
+          label: 'Costi giornalieri (€)',
+          backgroundColor: 'rgba(46, 230, 168, 0.25)',
           borderColor: '#2ee6a8',
-          backgroundColor: costGradient,
-          fill: true,
-          tension: 0.32,
-          borderWidth: 2.2,
-          pointRadius: 4,
-          pointBackgroundColor: '#0b1021',
-          pointBorderColor: '#2ee6a8'
+          borderWidth: 1.8,
+          outlierRadius: 3,
+          itemRadius: 0,
+          data: baseCostDistributions
         }]
       },
       options: {
@@ -570,9 +570,8 @@
       setTrend('variableCostsTrend', variableVar);
       setTrend('avgLLMCostTrend', (avgLLMVar * 100).toFixed(1));
 
-      const costNoise = baseCosts.map(v => Math.max(6000, v + Number(delta()) * 80));
-      const totalCost = costNoise.reduce((a, b) => a + b, 0);
-      costTrendChart.data.datasets[0].data = [...costNoise, totalCost];
+      const costNoise = baseCostDistributions.map(dist => dist.map(v => Math.max(6000, v + Number(delta()) * 60)));
+      costTrendChart.data.datasets[0].data = costNoise;
       costTrendChart.update();
 
       const modelNoise = modelCostChart.data.datasets[0].data.map(v => Math.max(4, v + Number(percentDelta())));
