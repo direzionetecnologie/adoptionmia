@@ -183,8 +183,7 @@
     @media (max-width: 1080px) { .feedback-canvas { grid-template-columns: 1fr; } }
 
     .page { display: none; }
-    .page.active { display: block; animation: fadeIn 220ms ease; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+    .page.active { display: block; }
 
     @media (max-width: 960px) {
       header { padding: 28px 24px 18px; }
@@ -448,24 +447,23 @@
       }
     });
 
+    const costLabels = ['Mar', 'Mer', 'Gio', 'Totale'];
+    const baseCosts = [8200, 9100, 8700];
     const costTrendChart = new Chart(costTrendCtx, {
-      type: 'line',
+      type: 'bar',
       data: {
-        labels: ['Mar', 'Mer', 'Gio'],
+        labels: costLabels,
         datasets: [{
-          label: 'Costi giornalieri (€)',
-          data: [8200, 9100, 8700],
-          borderColor: '#2ee6a8',
-          backgroundColor: 'rgba(46, 230, 168, 0.15)',
-          fill: true,
-          tension: 0.35,
-          borderWidth: 2.4,
-          pointRadius: 3,
-          pointBackgroundColor: '#0b1021',
-          pointBorderColor: '#2ee6a8'
+          label: 'Costi (€)',
+          data: [...baseCosts, baseCosts.reduce((a, b) => a + b, 0)],
+          backgroundColor: '#2ee6a8',
+          borderColor: '#0b1021',
+          borderWidth: 1.2,
+          borderRadius: 6
         }]
       },
       options: {
+        animation: false,
         plugins: { legend: { display: false }, tooltip: { backgroundColor: '#11172e', titleColor: '#fff', bodyColor: '#dfe7ff' } },
         scales: {
           x: { ticks: { color: '#9aa7c7' }, grid: { color: 'rgba(255,255,255,0.04)' } },
@@ -550,8 +548,9 @@
       setTrend('variableCostsTrend', variableVar);
       setTrend('avgLLMCostTrend', (avgLLMVar * 100).toFixed(1));
 
-      const costNoise = costTrendChart.data.datasets[0].data.map(v => Math.max(6000, v + Number(delta()) * 80));
-      costTrendChart.data.datasets[0].data = costNoise;
+      const costNoise = baseCosts.map(v => Math.max(6000, v + Number(delta()) * 80));
+      const totalCost = costNoise.reduce((a, b) => a + b, 0);
+      costTrendChart.data.datasets[0].data = [...costNoise, totalCost];
       costTrendChart.update();
 
       const modelNoise = modelCostChart.data.datasets[0].data.map(v => Math.max(4, v + Number(percentDelta())));
