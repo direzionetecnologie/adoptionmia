@@ -452,34 +452,41 @@
 
     const costLabels = ['Mar', 'Mer', 'Gio', 'Totale'];
     const baseCosts = [8200, 9100, 8700];
-
-    const createDistribution = value => ({
-      min: value * 0.92,
-      q1: value * 0.97,
-      median: value,
-      q3: value * 1.03,
-      max: value * 1.08
-    });
-
     const baseTotal = baseCosts.reduce((a, b) => a + b, 0);
-    const costDistributions = [...baseCosts.map(createDistribution), createDistribution(baseTotal)];
+
+    const costGradient = costTrendCtx.getContext('2d').createLinearGradient(0, 0, 0, 220);
+    costGradient.addColorStop(0, 'rgba(46, 230, 168, 0.35)');
+    costGradient.addColorStop(1, 'rgba(46, 230, 168, 0)');
 
     const costTrendChart = new Chart(costTrendCtx, {
-      type: 'boxplot',
+      type: 'line',
       data: {
         labels: costLabels,
         datasets: [{
           label: 'Costi (€)',
-          data: costDistributions,
-          backgroundColor: 'rgba(46, 230, 168, 0.35)',
+          data: [...baseCosts, baseTotal],
           borderColor: '#2ee6a8',
-          borderWidth: 1.4,
-          outlierColor: '#ff6d60',
-          padding: 12
+          backgroundColor: costGradient,
+          fill: true,
+          tension: 0.32,
+          borderWidth: 2.2,
+          pointRadius: 4,
+          pointBackgroundColor: '#0b1021',
+          pointBorderColor: '#2ee6a8'
         }]
       },
       options: {
-        plugins: { legend: { display: false }, tooltip: { backgroundColor: '#11172e', titleColor: '#fff', bodyColor: '#dfe7ff' } },
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            backgroundColor: '#11172e',
+            borderColor: 'rgba(255,255,255,0.08)',
+            borderWidth: 1,
+            padding: 12,
+            titleColor: '#fff',
+            bodyColor: '#dfe7ff'
+          }
+        },
         scales: {
           x: { ticks: { color: '#9aa7c7' }, grid: { color: 'rgba(255,255,255,0.04)' } },
           y: { ticks: { color: '#9aa7c7' }, grid: { color: 'rgba(255,255,255,0.04)' }, beginAtZero: true }
@@ -565,7 +572,7 @@
 
       const costNoise = baseCosts.map(v => Math.max(6000, v + Number(delta()) * 80));
       const totalCost = costNoise.reduce((a, b) => a + b, 0);
-      costTrendChart.data.datasets[0].data = [...costNoise.map(createDistribution), createDistribution(totalCost)];
+      costTrendChart.data.datasets[0].data = [...costNoise, totalCost];
       costTrendChart.update();
 
       const modelNoise = modelCostChart.data.datasets[0].data.map(v => Math.max(4, v + Number(percentDelta())));
