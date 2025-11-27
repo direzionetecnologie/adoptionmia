@@ -390,10 +390,13 @@
     const costTrendCtx = document.getElementById('costTrendChart');
     const modelCostCtx = document.getElementById('modelCostChart');
 
-    // Register default Chart.js components and the box/violin controllers to ensure
-    // all chart types render correctly when loaded from the CDN bundle.
-    const { BoxPlotController, ViolinPlotController, BoxPlotElement, ViolinPlotElement } = window['chartjs-chart-box-and-violin-plot'];
-    Chart.register(...Chart.registerables, BoxPlotController, ViolinPlotController, BoxPlotElement, ViolinPlotElement);
+    // Register Chart.js defaults and safely add the box/violin plugin if the CDN export is available.
+    Chart.register(...Chart.registerables);
+    const boxPlugin =
+      window['chartjs-chart-box-and-violin-plot'] || window.ChartBoxViolin || window.ChartBoxAndViolinPlot;
+    if (boxPlugin?.registerables) {
+      Chart.register(...boxPlugin.registerables);
+    }
     Chart.defaults.animation = false;
 
     const labels = ['Lun', 'Mar', 'Mer', 'Gio', 'Ven', 'Sab', 'Dom'];
@@ -416,8 +419,11 @@
       [36, 38, 40, 42, 44]
     ];
 
+    const hasBoxPlot = Chart.registry.controllers.get('boxplot');
+    const meanValue = series => series.reduce((a, b) => a + b, 0) / series.length;
+
     const trendChart = new Chart(trendCtx, {
-      type: 'boxplot',
+      type: hasBoxPlot ? 'boxplot' : 'line',
       data: {
         labels,
         datasets: [
@@ -425,19 +431,31 @@
             label: 'Interazioni (k)',
             backgroundColor: 'rgba(88, 211, 255, 0.25)',
             borderColor: '#58d3ff',
-            borderWidth: 1.8,
-            outlierRadius: 3,
-            itemRadius: 0,
-            data: weeklyInteractionDistributions
+            borderWidth: hasBoxPlot ? 1.8 : 2,
+            tension: hasBoxPlot ? 0 : 0.35,
+            outlierRadius: hasBoxPlot ? 3 : undefined,
+            itemRadius: hasBoxPlot ? 0 : undefined,
+            pointRadius: hasBoxPlot ? 0 : 5,
+            pointBackgroundColor: hasBoxPlot ? undefined : '#0b1021',
+            pointBorderColor: hasBoxPlot ? undefined : '#58d3ff',
+            data: hasBoxPlot
+              ? weeklyInteractionDistributions
+              : weeklyInteractionDistributions.map(dist => Number(meanValue(dist).toFixed(1)))
           },
           {
             label: 'Sessioni (k)',
             backgroundColor: 'rgba(140, 123, 255, 0.25)',
             borderColor: '#8c7bff',
-            borderWidth: 1.6,
-            outlierRadius: 3,
-            itemRadius: 0,
-            data: weeklySessionDistributions
+            borderWidth: hasBoxPlot ? 1.6 : 2,
+            tension: hasBoxPlot ? 0 : 0.35,
+            outlierRadius: hasBoxPlot ? 3 : undefined,
+            itemRadius: hasBoxPlot ? 0 : undefined,
+            pointRadius: hasBoxPlot ? 0 : 5,
+            pointBackgroundColor: hasBoxPlot ? undefined : '#0b1021',
+            pointBorderColor: hasBoxPlot ? undefined : '#8c7bff',
+            data: hasBoxPlot
+              ? weeklySessionDistributions
+              : weeklySessionDistributions.map(dist => Number(meanValue(dist).toFixed(1)))
           }
         ]
       },
