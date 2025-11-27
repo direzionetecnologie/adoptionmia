@@ -390,10 +390,13 @@
     const costTrendCtx = document.getElementById('costTrendChart');
     const modelCostCtx = document.getElementById('modelCostChart');
 
-    // Register default Chart.js components and the box/violin controllers to ensure
-    // all chart types render correctly when loaded from the CDN bundle.
-    const { BoxPlotController, ViolinPlotController, BoxPlotElement, ViolinPlotElement } = window['chartjs-chart-box-and-violin-plot'];
-    Chart.register(...Chart.registerables, BoxPlotController, ViolinPlotController, BoxPlotElement, ViolinPlotElement);
+    // Register Chart.js defaults and safely add the box/violin plugin if the CDN export is available.
+    Chart.register(...Chart.registerables);
+    const boxPlugin = window['chartjs-chart-box-and-violin-plot'];
+    if (boxPlugin?.BoxPlotController) {
+      const { BoxPlotController, ViolinPlotController, BoxPlotElement, ViolinPlotElement } = boxPlugin;
+      Chart.register(BoxPlotController, ViolinPlotController, BoxPlotElement, ViolinPlotElement);
+    }
     Chart.defaults.animation = false;
 
     const labels = ['Lun', 'Mar', 'Mer', 'Gio', 'Ven', 'Sab', 'Dom'];
