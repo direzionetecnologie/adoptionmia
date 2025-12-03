@@ -286,7 +286,22 @@
       font-weight: 600;
     }
 
-    canvas { width: 100%; height: auto; }
+    /* Chart wrappers keep canvases bounded and responsive */
+    .chart-wrapper {
+      position: relative;
+      width: 100%;
+      height: 340px;
+      max-height: 70vh;
+      overflow: hidden;
+    }
+
+    .chart-wrapper.is-compact { height: 280px; }
+
+    canvas {
+      width: 100% !important;
+      height: 100% !important;
+      display: block;
+    }
 
     /* --- Responsive --- */
     @media (max-width: 1024px) {
@@ -357,11 +372,17 @@
         <div class="grid split-2-1">
           <article class="panel" aria-label="Trend settimanale interazioni e sessioni">
             <div class="section-heading" style="margin: 0 0 12px; font-size: 15px;"><span></span>Interazioni e sessioni</div>
-            <canvas id="trendChart" aria-label="Grafico trend" role="img"></canvas>
+            <!-- Constrained chart area to avoid unbounded height growth -->
+            <div class="chart-wrapper">
+              <canvas id="trendChart" aria-label="Grafico trend" role="img"></canvas>
+            </div>
           </article>
           <article class="panel" aria-label="Ripartizione tipologie di utilizzo">
             <div class="section-heading" style="margin: 0 0 12px; font-size: 15px;"><span></span>Tipologie di utilizzo</div>
-            <canvas id="usagePieChart" aria-label="Grafico a torta utilizzo" role="img"></canvas>
+            <!-- Constrained chart area to avoid unbounded height growth -->
+            <div class="chart-wrapper is-compact">
+              <canvas id="usagePieChart" aria-label="Grafico a torta utilizzo" role="img"></canvas>
+            </div>
           </article>
         </div>
       </section>
@@ -429,11 +450,17 @@
         <div class="grid split-2-1" style="margin-top: 10px;">
           <article class="panel" aria-label="Andamento costi">
             <div class="section-heading" style="margin: 0 0 12px; font-size: 15px;"><span></span>Andamento costi</div>
-            <canvas id="costTrendChart" aria-label="Bar chart costi" role="img" height="240"></canvas>
+            <!-- Constrained chart area to avoid unbounded height growth -->
+            <div class="chart-wrapper">
+              <canvas id="costTrendChart" aria-label="Bar chart costi" role="img"></canvas>
+            </div>
           </article>
           <article class="panel" aria-label="Ripartizione costo per modello">
             <div class="section-heading" style="margin: 0 0 12px; font-size: 15px;"><span></span>Ripartizione costo per modello</div>
-            <canvas id="modelCostChart" aria-label="Doughnut costo modello" role="img" height="240"></canvas>
+            <!-- Constrained chart area to avoid unbounded height growth -->
+            <div class="chart-wrapper is-compact">
+              <canvas id="modelCostChart" aria-label="Doughnut costo modello" role="img"></canvas>
+            </div>
           </article>
         </div>
 
@@ -523,6 +550,7 @@
       },
       options: {
         animation: false,
+        maintainAspectRatio: false,
         plugins: {
           legend: { labels: { color: '#d9e1f7', font: { size: 11 } }, position: 'top' },
           tooltip: {
@@ -565,6 +593,7 @@
         }]
       },
       options: {
+        maintainAspectRatio: false,
         cutout: '55%',
         plugins: {
           legend: {
@@ -653,6 +682,7 @@
       },
       options: {
         animation: false,
+        maintainAspectRatio: false,
         cutout: '60%',
         plugins: {
           legend: {
