@@ -1,609 +1,481 @@
-<!DOCTYPE html>
-
+<!doctype html>
 <html lang="it">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>MIA Monitoraggio Adoption</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
   <style>
     :root {
-      --bg: #0b1021;
-      --card: #11172e;
+      --bg: #0a1024;
+      --surface: #0f172d;
+      --panel: #131c34;
       --primary: #58d3ff;
       --secondary: #8c7bff;
       --accent: #2ee6a8;
+      --warning: #ff6d60;
       --text: #e8ecf5;
-      --muted: #a5afc9;
-      --glow: 0 10px 40px rgba(88, 211, 255, 0.25);
+      --muted: #9aa7c7;
+      --stroke: rgba(255, 255, 255, 0.08);
+      --radius: 18px;
     }
 
-```
-* { box-sizing: border-box; }
+    * {
+      box-sizing: border-box;
+    }
 
-body {
-  margin: 0;
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
-  background: radial-gradient(circle at 20% 20%, rgba(88, 211, 255, 0.08), transparent 35%),
-              radial-gradient(circle at 80% 0%, rgba(140, 123, 255, 0.09), transparent 40%),
-              radial-gradient(circle at 50% 70%, rgba(46, 230, 168, 0.07), transparent 45%),
-              var(--bg);
-  color: var(--text);
-  min-height: 100vh;
-}
+    body {
+      margin: 0;
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background:
+        radial-gradient(circle at 12% 18%, rgba(88, 211, 255, 0.08), transparent 35%),
+        radial-gradient(circle at 88% 10%, rgba(140, 123, 255, 0.08), transparent 35%),
+        radial-gradient(circle at 60% 70%, rgba(46, 230, 168, 0.07), transparent 40%),
+        var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
 
-header {
-  padding: 32px 64px 24px;
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-  position: sticky;
-  top: 0;
-  background: linear-gradient(180deg, rgba(11,16,33,0.98) 0%, rgba(11,16,33,0.80) 100%);
-  backdrop-filter: blur(10px);
-  z-index: 10;
-  border-bottom: 1px solid rgba(255,255,255,0.04);
-}
+    a { color: inherit; }
 
-.top-bar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-}
+    /* --- Layout --- */
+    .app-shell {
+      display: grid;
+      grid-template-rows: auto 1fr;
+      min-height: 100vh;
+    }
 
-.brand {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  font-weight: 700;
-  letter-spacing: 0.4px;
-}
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background: linear-gradient(180deg, rgba(10, 16, 36, 0.95) 0%, rgba(10, 16, 36, 0.85) 100%);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--stroke);
+    }
 
-.pulse {
-  width: 10px;
-  height: 10px;
-  background: var(--accent);
-  border-radius: 50%;
-  position: relative;
-}
+    .header-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 22px 64px 14px;
+      flex-wrap: wrap;
+    }
 
-.pulse::after {
-  content: '';
-  position: absolute;
-  inset: -6px;
-  border-radius: 50%;
-  border: 1px solid rgba(46, 230, 168, 0.5);
-  animation: pulse 2s infinite;
-}
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+      color: var(--text);
+    }
 
-@keyframes pulse {
-  0% { transform: scale(0.6); opacity: 0.7; }
-  100% { transform: scale(1.6); opacity: 0; }
-}
+    .pulse {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--accent);
+      position: relative;
+    }
 
-.brand-title {
-  font-size: 20px;
-}
+    .pulse::after {
+      content: '';
+      position: absolute;
+      inset: -6px;
+      border-radius: 999px;
+      border: 1px solid rgba(46, 230, 168, 0.55);
+      animation: pulse 2.2s infinite;
+    }
 
-.page-nav {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  background: rgba(255,255,255,0.03);
-  border: 1px solid rgba(255,255,255,0.06);
-  border-radius: 14px;
-  padding: 6px;
-  width: fit-content;
-}
+    @keyframes pulse {
+      0% { transform: scale(0.65); opacity: 0.8; }
+      100% { transform: scale(1.7); opacity: 0; }
+    }
 
-.page-tab {
-  border: none;
-  background: transparent;
-  color: var(--muted);
-  padding: 8px 18px;
-  border-radius: 10px;
-  font-weight: 600;
-  font-size: 14px;
-  cursor: pointer;
-  transition: background 120ms ease, color 120ms ease;
-}
+    .toolbar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
 
-.page-tab.active {
-  background: linear-gradient(135deg, rgba(88,211,255,0.15), rgba(140,123,255,0.15));
-  color: var(--text);
-}
+    .pill {
+      padding: 8px 14px;
+      border-radius: 12px;
+      border: 1px solid var(--stroke);
+      background: rgba(255, 255, 255, 0.03);
+      color: var(--muted);
+      font-weight: 600;
+      font-size: 13px;
+    }
 
-main {
-  padding: 40px 64px 80px;
-  max-width: 1600px;
-  margin: 0 auto;
-}
+    nav {
+      padding: 0 64px 18px;
+    }
 
-.grid {
-  display: grid;
-  gap: 20px;
-}
+    .tablist {
+      display: inline-flex;
+      gap: 10px;
+      padding: 6px;
+      border-radius: 14px;
+      border: 1px solid var(--stroke);
+      background: rgba(255, 255, 255, 0.04);
+      list-style: none;
+      margin: 0;
+    }
 
-.metrics {
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-}
+    .tab-button {
+      border: none;
+      background: transparent;
+      color: var(--muted);
+      padding: 10px 18px;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      transition: background 0.15s ease, color 0.15s ease, box-shadow 0.2s ease;
+    }
 
-/* Economics metrics layout */
-.metrics-economics {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 16px;
-  margin-bottom: 28px;
-}
+    .tab-button[aria-selected="true"] {
+      color: var(--text);
+      background: linear-gradient(135deg, rgba(88, 211, 255, 0.18), rgba(140, 123, 255, 0.16));
+      box-shadow: 0 8px 28px rgba(88, 211, 255, 0.18);
+    }
 
-.panel {
-  background: linear-gradient(180deg, rgba(255,255,255,0.02) 0%, rgba(255,255,255,0) 100%);
-  border: 1px solid rgba(255,255,255,0.06);
-  border-radius: 20px;
-  padding: 24px 28px;
-  position: relative;
-  overflow: hidden;
-  box-shadow: 0 20px 60px rgba(0,0,0,0.35);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
+    main {
+      padding: 36px 64px 72px;
+      max-width: 1400px;
+      margin: 0 auto;
+      width: 100%;
+      display: grid;
+      gap: 24px;
+    }
 
-.panel:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 24px 70px rgba(0,0,0,0.45);
-}
+    /* --- Cards & Panels --- */
+    .section-heading {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+      font-size: 18px;
+      margin: 6px 0 6px;
+    }
 
-.panel::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(circle at 20% 20%, rgba(88,211,255,0.08), transparent 40%);
-  opacity: 0.6;
-  pointer-events: none;
-}
+    .section-heading span {
+      width: 6px;
+      height: 22px;
+      border-radius: 12px;
+      background: linear-gradient(180deg, var(--primary), var(--secondary));
+      display: inline-block;
+    }
 
-.panel h3 {
-  margin: 0;
-  font-size: 13px;
-  color: var(--muted);
-  letter-spacing: 0.8px;
-  text-transform: uppercase;
-  font-weight: 600;
-}
+    .panel {
+      position: relative;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%);
+      border: 1px solid var(--stroke);
+      border-radius: var(--radius);
+      padding: 22px;
+      overflow: hidden;
+      box-shadow: 0 18px 42px rgba(0, 0, 0, 0.35);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
 
-.panel .value {
-  margin-top: 16px;
-  font-size: 36px;
-  font-weight: 700;
-  letter-spacing: -0.5px;
-}
+    .panel:hover { transform: translateY(-2px); box-shadow: 0 22px 56px rgba(0, 0, 0, 0.4); }
 
-.section-title {
-  margin: 48px 0 20px;
-  font-size: 20px;
-  letter-spacing: 0.3px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  font-weight: 600;
-}
+    .panel::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background: radial-gradient(circle at 18% 18%, rgba(88, 211, 255, 0.09), transparent 40%);
+    }
 
-.section-title span {
-  width: 5px;
-  height: 24px;
-  border-radius: 6px;
-  background: linear-gradient(180deg, var(--primary), var(--secondary));
-  display: inline-block;
-}
+    .panel h3 {
+      margin: 0;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.7px;
+      font-size: 12px;
+      font-weight: 700;
+    }
 
-.chart-card {
-  padding: 28px;
-}
+    .kpi-value {
+      margin-top: 12px;
+      font-size: 34px;
+      font-weight: 800;
+      letter-spacing: -0.4px;
+    }
 
-.feedback-shell {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
+    .kpi-sub {
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 13px;
+    }
 
-.feedback-surface {
-  padding: 32px;
-  border-radius: 24px;
-  background: linear-gradient(135deg, rgba(255,255,255,0.04), rgba(255,255,255,0));
-  border: 1px solid rgba(255,255,255,0.08);
-  box-shadow: 0 24px 80px rgba(0,0,0,0.45);
-  position: relative;
-  overflow: hidden;
-}
+    .grid {
+      display: grid;
+      gap: 18px;
+    }
 
-.feedback-surface::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background:
-    radial-gradient(circle at 18% 20%, rgba(255,109,96,0.18), transparent 42%),
-    radial-gradient(circle at 82% 28%, rgba(88,211,255,0.12), transparent 38%),
-    radial-gradient(circle at 60% 90%, rgba(140,123,255,0.12), transparent 36%);
-  opacity: 0.9;
-  pointer-events: none;
-}
+    .grid.metrics { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+    .grid.split-2-1 { grid-template-columns: 2fr 1fr; align-items: stretch; }
+    .grid.split-3 { grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
 
-.feedback-canvas {
-  display: grid;
-  grid-template-columns: 1fr 2fr;
-  gap: 24px;
-  position: relative;
-  z-index: 1;
-}
+    /* --- Feedback layout --- */
+    .feedback-wrap { display: grid; gap: 18px; grid-template-columns: 1fr 1.6fr; align-items: start; }
+    .feedback-summary { display: flex; gap: 16px; align-items: center; }
+    .badge-icon {
+      width: 72px;
+      height: 72px;
+      border-radius: 16px;
+      display: grid;
+      place-items: center;
+      font-size: 36px;
+      background: radial-gradient(circle at 30% 30%, rgba(255, 109, 96, 0.35), rgba(255, 109, 96, 0.16));
+      border: 1px solid rgba(255, 109, 96, 0.45);
+      box-shadow: 0 18px 48px rgba(255, 109, 96, 0.25);
+    }
 
-.feedback-col {
-  background: rgba(11,16,33,0.7);
-  border: 1px solid rgba(255,255,255,0.06);
-  border-radius: 20px;
-  padding: 24px;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  backdrop-filter: blur(6px);
-  box-shadow: var(--glow);
-}
+    .issue-list { display: flex; flex-direction: column; gap: 12px; }
+    .issue-row {
+      display: grid;
+      grid-template-columns: 1.1fr 1fr;
+      gap: 12px;
+      padding: 14px 16px;
+      border-radius: 14px;
+      border: 1px solid var(--stroke);
+      background: rgba(255, 255, 255, 0.03);
+      position: relative;
+      overflow: hidden;
+    }
 
-.thumb-hero {
-  display: flex;
-  gap: 16px;
-  align-items: center;
-}
+    .issue-row::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background: linear-gradient(135deg, rgba(88, 211, 255, 0.05), rgba(140, 123, 255, 0.05));
+    }
 
-.thumb-icon {
-  width: 72px;
-  height: 72px;
-  border-radius: 20px;
-  display: grid;
-  place-items: center;
-  font-size: 36px;
-  background: radial-gradient(circle at 30% 30%, rgba(255,109,96,0.45), rgba(255,109,96,0.18));
-  border: 1px solid rgba(255,109,96,0.35);
-  box-shadow: 0 16px 40px rgba(255,109,96,0.25);
-}
+    .issue-row strong { display: inline-flex; align-items: center; gap: 10px; font-size: 15px; }
+    .swatch { width: 12px; height: 12px; border-radius: 999px; box-shadow: 0 8px 18px rgba(0,0,0,0.25); }
+    .issue-note { color: var(--muted); font-size: 14px; line-height: 1.5; }
 
-.eyebrow {
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  font-size: 10px;
-  color: #ffb5ae;
-  font-weight: 800;
-}
+    .pair-hallu { border-color: rgba(255, 109, 96, 0.6); }
+    .pair-hallu .swatch { background: #ff6d60; }
+    .pair-intent { border-color: rgba(88, 211, 255, 0.6); }
+    .pair-intent .swatch { background: #58d3ff; }
+    .pair-latency { border-color: rgba(140, 123, 255, 0.6); }
+    .pair-latency .swatch { background: #8c7bff; }
+    .pair-style { border-color: rgba(46, 230, 168, 0.6); }
+    .pair-style .swatch { background: #2ee6a8; }
 
-.feedback-value {
-  font-size: 40px;
-  font-weight: 800;
-  letter-spacing: -0.5px;
-  margin-top: 4px;
-}
+    .chips { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 6px; }
+    .chip {
+      padding: 10px 14px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--stroke);
+      color: var(--text);
+      font-size: 13px;
+      font-weight: 600;
+    }
 
-.feedback-sub {
-  color: var(--muted);
-  font-weight: 500;
-  font-size: 14px;
-  line-height: 1.4;
-}
+    canvas { width: 100%; height: auto; }
 
-.column-title {
-  font-weight: 800;
-  letter-spacing: 0.4px;
-  color: var(--muted);
-  text-transform: uppercase;
-  font-size: 12px;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
+    /* --- Responsive --- */
+    @media (max-width: 1024px) {
+      main { padding: 30px 28px 64px; }
+      nav { padding: 0 28px 16px; }
+      .header-inner { padding: 18px 28px 12px; }
+      .grid.split-2-1 { grid-template-columns: 1fr; }
+      .feedback-wrap { grid-template-columns: 1fr; }
+    }
 
-.column-title::before {
-  content: '';
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, var(--primary), var(--secondary));
-  box-shadow: 0 0 0 5px rgba(88,211,255,0.12);
-}
-
-.column-title-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-  align-items: center;
-  margin-bottom: 10px;
-}
-
-.pair-list {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
-
-.pair-row {
-  display: grid;
-  grid-template-columns: 1fr 2fr;
-  gap: 16px;
-  align-items: center;
-  padding: 16px 18px;
-  border-radius: 14px;
-  border: 1px solid rgba(255,255,255,0.06);
-  background: rgba(255,255,255,0.03);
-  position: relative;
-  overflow: hidden;
-}
-
-.pair-row::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(135deg, rgba(88,211,255,0.05), rgba(140,123,255,0.05));
-  opacity: 0.8;
-  pointer-events: none;
-}
-
-.pair-left,
-.pair-right {
-  position: relative;
-  z-index: 1;
-}
-
-.macro-name {
-  font-weight: 800;
-  letter-spacing: 0.3px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 15px;
-}
-
-.swatch {
-  width: 13px;
-  height: 13px;
-  border-radius: 10px;
-  box-shadow: 0 6px 18px rgba(0,0,0,0.22);
-}
-
-.remediation-text {
-  color: var(--muted);
-  font-weight: 500;
-  line-height: 1.6;
-  font-size: 14px;
-}
-
-.pair-hallu { border-color: rgba(255,109,96,0.6); }
-.pair-hallu .swatch { background: #ff6d60; }
-
-.pair-intent { border-color: rgba(88,211,255,0.7); }
-.pair-intent .swatch { background: #58d3ff; }
-
-.pair-latency { border-color: rgba(140,123,255,0.7); }
-.pair-latency .swatch { background: #8c7bff; }
-
-.pair-style { border-color: rgba(46,230,168,0.7); }
-.pair-style .swatch { background: #2ee6a8; }
-
-.chips {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-  margin-top: 8px;
-}
-
-.chip {
-  padding: 10px 16px;
-  border-radius: 12px;
-  background: rgba(255,255,255,0.06);
-  border: 1px solid rgba(255,255,255,0.08);
-  color: var(--text);
-  font-size: 13px;
-  font-weight: 500;
-}
-
-.page {
-  display: none;
-}
-
-.page.active {
-  display: block;
-}
-
-@media (max-width: 960px) {
-  header { padding: 24px 32px 20px; }
-  main { padding: 32px 32px 64px; }
-  .feedback-canvas { grid-template-columns: 1fr; }
-  .section-title { margin: 36px 0 16px; }
-  .metrics-economics {
-    grid-template-columns: 1fr;
-    margin-bottom: 24px;
-  }
-}
-
-@media (max-width: 640px) {
-  .top-bar { justify-content: center; }
-  .page-nav { width: 100%; justify-content: center; }
-  .page-tab { flex: 1; text-align: center; }
-}
+    @media (max-width: 640px) {
+      .tablist { width: 100%; justify-content: space-between; }
+      .tab-button { flex: 1; text-align: center; }
+      .header-inner { flex-direction: column; align-items: flex-start; }
+    }
   </style>
 </head>
 <body>
-  <header>
-    <div class="top-bar">
-      <div class="brand">
-        <div class="pulse"></div>
-        <div class="brand-title">MIA Monitoraggio Adoption</div>
-      </div>
-    </div>
-    <div class="page-nav">
-      <button class="page-tab active" data-target="qualitativa">Adoption</button>
-      <button class="page-tab" data-target="feedback">Feedback analysis</button>
-      <button class="page-tab" data-target="economics">Economics</button>
-    </div>
-  </header>
-
-  <main>
-    <section class="page active" id="page-qualitativa">
-      <div class="grid metrics">
-        <div class="panel">
-          <h3>Utenti unici</h3>
-          <div class="value" id="usersValue">445</div>
-        </div>
-        <div class="panel">
-          <h3>Interazioni</h3>
-          <div class="value" id="interactionsValue">5900</div>
-        </div>
-        <div class="panel">
-          <h3>Sessioni</h3>
-          <div class="value" id="sessionsValue">949</div>
-        </div>
-      </div>
-
-```
-  <div class="section-title"><span></span>Andamento settimanale</div>
-  <div class="grid" style="grid-template-columns: 2fr 1fr; gap: 20px; align-items: stretch;">
-    <div class="panel chart-card">
-      <canvas id="trendChart" height="180"></canvas>
-    </div>
-    <div class="panel chart-card">
-      <h3>Tipologie di utilizzo</h3>
-      <canvas id="usagePieChart" height="180"></canvas>
-    </div>
-  </div>
-</section>
-
-<section class="page" id="page-feedback">
-  <div class="section-title"><span></span>Feedback analysis</div>
-  <div class="feedback-shell">
-    <div class="feedback-surface">
-      <div class="feedback-canvas">
-        <div class="feedback-col">
-          <div class="thumb-hero">
-            <div class="thumb-icon">👎</div>
-            <div>
-              <div class="eyebrow">Thumbs down</div>
-              <div class="feedback-value">48</div>
-              <div class="feedback-sub">pollici in giù su 5900 interazioni</div>
-            </div>
+  <div class="app-shell">
+    <!-- Header -->
+    <header>
+      <div class="header-inner">
+        <div class="brand" aria-label="MIA Monitoraggio Adoption">
+          <span class="pulse" aria-hidden="true"></span>
+          <div>
+            <div style="font-size: 16px;">MIA Monitoraggio Adoption</div>
+            <div style="color: var(--muted); font-size: 13px;">Dashboard di utilizzo e performance</div>
           </div>
         </div>
+        <div class="toolbar" aria-label="Opzioni di contesto">
+          <span class="pill" title="Periodo di osservazione">Ultimi 7 giorni</span>
+          <span class="pill" title="Ambiente">Produzione</span>
+          <span class="pill" title="Aggiornamento">Aggiornato 5 min fa</span>
+        </div>
+      </div>
+      <nav aria-label="Navigazione dashboard">
+        <ul class="tablist" role="tablist">
+          <li><button class="tab-button" role="tab" aria-selected="true" aria-controls="page-adoption" data-target="adoption">Adoption</button></li>
+          <li><button class="tab-button" role="tab" aria-selected="false" aria-controls="page-feedback" data-target="feedback">Feedback analysis</button></li>
+          <li><button class="tab-button" role="tab" aria-selected="false" aria-controls="page-economics" data-target="economics">Economics</button></li>
+        </ul>
+      </nav>
+    </header>
 
-        <div class="feedback-col">
-          <div class="column-title-row">
-            <div class="column-title">Macrocategorie di errore</div>
-            <div class="column-title">Remediation action</div>
-          </div>
-          <div class="pair-list">
-            <div class="pair-row pair-hallu">
-              <div class="pair-left">
-                <div class="macro-name">
-                  <div class="swatch"></div>
-                  Allucinazione su feature di creazione file
-                </div>
-              </div>
-              <div class="pair-right">
-                <div class="remediation-text">Rinforzo sul prompt di sistema di MIA</div>
-              </div>
-            </div>
-
-            <div class="pair-row pair-intent">
-              <div class="pair-left">
-                <div class="macro-name">
-                  <div class="swatch"></div>
-                  Bug di risposta con errore di sistema
-                </div>
-              </div>
-              <div class="pair-right">
-                <div class="remediation-text">Bug corretto e portato in produzione</div>
-              </div>
-            </div>
-
-            <div class="pair-row pair-latency">
-              <div class="pair-left">
-                <div class="macro-name">
-                  <div class="swatch"></div>
-                  Domande sulla Intranet
-                </div>
-              </div>
-              <div class="pair-right">
-                <div class="remediation-text">Rinforzo sul prompt di sistema</div>
-              </div>
-            </div>
-
-            <div class="pair-row pair-style">
-              <div class="pair-left">
-                <div class="macro-name">
-                  <div class="swatch"></div>
-                  Elaborazione File Excel
-                </div>
-              </div>
-              <div class="pair-right">
-                <div class="remediation-text">Enhancing della feature ongoing</div>
-              </div>
-            </div>
-          </div>
+    <main>
+      <!-- Adoption Page -->
+      <section id="page-adoption" class="page" role="tabpanel" aria-labelledby="Adoption" aria-hidden="false">
+        <div class="section-heading"><span></span>Panoramica utilizzo</div>
+        <div class="grid metrics" aria-label="Indicatori principali">
+          <article class="panel" aria-label="Utenti unici">
+            <h3>Utenti unici</h3>
+            <div class="kpi-value" id="usersValue">445</div>
+            <div class="kpi-sub">+6% rispetto alla settimana precedente</div>
+          </article>
+          <article class="panel" aria-label="Interazioni">
+            <h3>Interazioni</h3>
+            <div class="kpi-value" id="interactionsValue">5900</div>
+            <div class="kpi-sub">Tasso di completion 94%</div>
+          </article>
+          <article class="panel" aria-label="Sessioni">
+            <h3>Sessioni</h3>
+            <div class="kpi-value" id="sessionsValue">949</div>
+            <div class="kpi-sub">Durata media 5m 12s</div>
+          </article>
         </div>
 
-      </div>
-    </div>
-  </div>
-</section>
+        <div class="section-heading" style="margin-top: 22px;"><span></span>Andamento settimanale</div>
+        <div class="grid split-2-1">
+          <article class="panel" aria-label="Trend settimanale interazioni e sessioni">
+            <div class="section-heading" style="margin: 0 0 12px; font-size: 15px;"><span></span>Interazioni e sessioni</div>
+            <canvas id="trendChart" aria-label="Grafico trend" role="img"></canvas>
+          </article>
+          <article class="panel" aria-label="Ripartizione tipologie di utilizzo">
+            <div class="section-heading" style="margin: 0 0 12px; font-size: 15px;"><span></span>Tipologie di utilizzo</div>
+            <canvas id="usagePieChart" aria-label="Grafico a torta utilizzo" role="img"></canvas>
+          </article>
+        </div>
+      </section>
 
-<section class="page" id="page-economics">
-  <div class="section-title"><span></span>Economics</div>
-  <div class="grid metrics metrics-economics">
-    <div class="panel">
-      <h3>Costi infrastruttura</h3>
-      <div class="value" id="infraCosts">$ 500 (monthly atteso $ 2000)</div>
-    </div>
-    <div class="panel">
-      <h3>Costi variabili</h3>
-      <div class="value" id="variableCosts">$ 40</div>
-    </div>
-    <div class="panel">
-      <h3>Costo medio LLM per 1k token</h3>
-      <div class="value" id="avgLLMCost">$ 0.0050</div>
-    </div>
-  </div>
+      <!-- Feedback Page -->
+      <section id="page-feedback" class="page" role="tabpanel" aria-labelledby="Feedback analysis" aria-hidden="true" hidden>
+        <div class="section-heading"><span></span>Feedback analysis</div>
+        <div class="feedback-wrap">
+          <article class="panel" aria-label="Sintesi feedback negativi">
+            <div class="feedback-summary">
+              <div class="badge-icon" aria-hidden="true">👎</div>
+              <div>
+                <div class="pill" style="padding: 6px 10px; display: inline-block; color: #ffb5ae; border-color: rgba(255,109,96,0.5);">Thumbs down</div>
+                <div class="kpi-value" style="margin-top: 6px;">48</div>
+                <div class="kpi-sub">pollici in giù su 5.900 interazioni</div>
+              </div>
+            </div>
+          </article>
 
-  <div class="grid" style="grid-template-columns: 1.5fr 1fr; gap: 20px; align-items: stretch;">
-    <div class="panel chart-card">
-      <h3 style="margin-bottom: 20px;">Andamento costi</h3>
-      <canvas id="costTrendChart" height="240"></canvas>
-    </div>
-    <div class="panel chart-card">
-      <h3 style="margin-bottom: 20px;">Ripartizione costo per modello</h3>
-      <canvas id="modelCostChart" height="240"></canvas>
-    </div>
-  </div>
-  
-  <div class="section-title"><span></span>Driver di spesa</div>
-  <div class="chips">
-    <div class="chip">Caching di risposta attivo su top intent</div>
-    <div class="chip">Accorpamento richieste batch per orchestrazione</div>
-    <div class="chip">Monitoraggio real-time dei costi per stream</div>
-  </div>
-</section>
-```
+          <article class="panel" aria-label="Macrocategorie di errore e remediation">
+            <div class="section-heading" style="margin: 0 0 12px; font-size: 15px;"><span></span>Macrocategorie di errore</div>
+            <div class="issue-list" role="list">
+              <div class="issue-row pair-hallu" role="listitem">
+                <strong><span class="swatch" aria-hidden="true"></span>Allucinazione su feature di creazione file</strong>
+                <div class="issue-note">Rinforzo sul prompt di sistema di MIA</div>
+              </div>
+              <div class="issue-row pair-intent" role="listitem">
+                <strong><span class="swatch" aria-hidden="true"></span>Bug di risposta con errore di sistema</strong>
+                <div class="issue-note">Bug corretto e portato in produzione</div>
+              </div>
+              <div class="issue-row pair-latency" role="listitem">
+                <strong><span class="swatch" aria-hidden="true"></span>Elevata latenza su richieste complesse</strong>
+                <div class="issue-note">Caching risultati frequenti + ottimizzazione orchestrazione</div>
+              </div>
+              <div class="issue-row pair-style" role="listitem">
+                <strong><span class="swatch" aria-hidden="true"></span>Stile di risposta incoerente</strong>
+                <div class="issue-note">Linee guida tonality riviste e validate</div>
+              </div>
+            </div>
+          </article>
+        </div>
+      </section>
 
-  </main>
+      <!-- Economics Page -->
+      <section id="page-economics" class="page" role="tabpanel" aria-labelledby="Economics" aria-hidden="true" hidden>
+        <div class="section-heading"><span></span>Economics</div>
+        <div class="grid metrics" aria-label="Indicatori economici">
+          <article class="panel" aria-label="Costi aggregati">
+            <h3>Costi aggregati</h3>
+            <div class="kpi-value" id="totalCosts">$ 24,000</div>
+            <div class="kpi-sub">Periodo corrente</div>
+          </article>
+          <article class="panel" aria-label="Costi variabili">
+            <h3>Costi variabili</h3>
+            <div class="kpi-value" id="variableCosts">$ 40</div>
+            <div class="kpi-sub">Su componenti opzionali</div>
+          </article>
+          <article class="panel" aria-label="Costo medio LLM">
+            <h3>Costo medio LLM per 1k token</h3>
+            <div class="kpi-value" id="avgLLMCost">$ 0.0050</div>
+            <div class="kpi-sub">Riduzione -4% WoW</div>
+          </article>
+        </div>
+
+        <div class="grid split-2-1" style="margin-top: 10px;">
+          <article class="panel" aria-label="Andamento costi">
+            <div class="section-heading" style="margin: 0 0 12px; font-size: 15px;"><span></span>Andamento costi</div>
+            <canvas id="costTrendChart" aria-label="Bar chart costi" role="img" height="240"></canvas>
+          </article>
+          <article class="panel" aria-label="Ripartizione costo per modello">
+            <div class="section-heading" style="margin: 0 0 12px; font-size: 15px;"><span></span>Ripartizione costo per modello</div>
+            <canvas id="modelCostChart" aria-label="Doughnut costo modello" role="img" height="240"></canvas>
+          </article>
+        </div>
+
+        <div class="section-heading" style="margin-top: 14px;"><span></span>Driver di spesa</div>
+        <div class="chips" aria-label="Driver di spesa">
+          <span class="chip">Caching di risposta attivo su top intent</span>
+          <span class="chip">Accorpamento richieste batch per orchestrazione</span>
+          <span class="chip">Monitoraggio real-time dei costi per stream</span>
+        </div>
+      </section>
+    </main>
+  </div>
 
   <script>
     Chart.register(ChartDataLabels);
 
     const pages = document.querySelectorAll('.page');
-    const tabs = document.querySelectorAll('.page-tab');
+    const tabs = document.querySelectorAll('.tab-button');
 
-    tabs.forEach(tab => {
-      tab.addEventListener('click', () => switchPage(tab.dataset.target));
-    });
+    function switchPage(targetId) {
+      pages.forEach((page) => {
+        const active = page.id === `page-${targetId}`;
+        page.hidden = !active;
+        page.setAttribute('aria-hidden', String(!active));
+        page.classList.toggle('active', active);
+      });
 
-    function switchPage(target) {
-      tabs.forEach(t => t.classList.toggle('active', t.dataset.target === target));
-      pages.forEach(p => p.classList.toggle('active', p.id === `page-${target}`));
+      tabs.forEach((tab) => {
+        const selected = tab.dataset.target === targetId;
+        tab.setAttribute('aria-selected', String(selected));
+      });
     }
+
+    tabs.forEach((tab) => {
+      tab.addEventListener('click', () => switchPage(tab.dataset.target));
+      tab.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          switchPage(tab.dataset.target);
+        }
+      });
+    });
 
     const trendCtx = document.getElementById('trendChart');
     const usagePieCtx = document.getElementById('usagePieChart');
@@ -618,7 +490,7 @@ main {
     gradient.addColorStop(0, 'rgba(88, 211, 255, 0.35)');
     gradient.addColorStop(1, 'rgba(88, 211, 255, 0)');
 
-    const trendChart = new Chart(trendCtx, {
+    new Chart(trendCtx, {
       type: 'line',
       data: {
         labels,
@@ -655,7 +527,7 @@ main {
           legend: { labels: { color: '#d9e1f7', font: { size: 11 } }, position: 'top' },
           tooltip: {
             backgroundColor: '#11172e',
-            borderColor: 'rgba(255,255,255,0.08)',
+            borderColor: 'rgba(255, 255, 255, 0.08)',
             borderWidth: 1,
             padding: 10,
             titleColor: '#fff',
@@ -672,7 +544,7 @@ main {
 
     const usageData = [55, 19, 5, 3, 4, 3, 2, 7];
 
-    const usagePieChart = new Chart(usagePieCtx, {
+    new Chart(usagePieCtx, {
       type: 'doughnut',
       data: {
         labels: [
@@ -683,20 +555,11 @@ main {
           'Drafting',
           'Summarization',
           'Comparazione',
-          'Generazione immagini',
+          'Generazione immagini'
         ],
         datasets: [{
           data: usageData,
-          backgroundColor: [
-            '#58d3ff',
-            '#8c7bff',
-            '#2ee6a8',
-            '#ffae63',
-            '#ff6d60',
-            '#7ce7c7',
-            '#ffc764',
-            '#b38cff'
-          ],
+          backgroundColor: ['#58d3ff', '#8c7bff', '#2ee6a8', '#ffae63', '#ff6d60', '#7ce7c7', '#ffc764', '#b38cff'],
           borderWidth: 1,
           borderColor: '#0b1021'
         }]
@@ -726,7 +589,7 @@ main {
     const costLabels = ['Mar', 'Mer', 'Gio', 'Totale'];
     const baseCosts = [8200, 9100, 8700];
 
-    const costTrendChart = new Chart(costTrendCtx, {
+    new Chart(costTrendCtx, {
       type: 'bar',
       data: {
         labels: costLabels,
@@ -755,20 +618,15 @@ main {
           datalabels: { display: false }
         },
         scales: {
-          x: { 
-            ticks: { color: '#9aa7c7', font: { size: 12 } }, 
-            grid: { color: 'rgba(255,255,255,0.04)' } 
-          },
-          y: { 
-            ticks: { 
-              color: '#9aa7c7', 
+          x: { ticks: { color: '#9aa7c7', font: { size: 12 } }, grid: { color: 'rgba(255,255,255,0.04)' } },
+          y: {
+            ticks: {
+              color: '#9aa7c7',
               font: { size: 12 },
-              callback: function(value) {
-                return '€ ' + value.toLocaleString();
-              }
-            }, 
-            grid: { color: 'rgba(255,255,255,0.06)' }, 
-            beginAtZero: true 
+              callback: function(value) { return '€ ' + value.toLocaleString(); }
+            },
+            grid: { color: 'rgba(255,255,255,0.06)' },
+            beginAtZero: true
           }
         }
       }
@@ -776,7 +634,7 @@ main {
 
     const modelCostData = [39, 42, 11, 7, 1];
 
-    const modelCostChart = new Chart(modelCostCtx, {
+    new Chart(modelCostCtx, {
       type: 'doughnut',
       data: {
         labels: [
@@ -816,6 +674,5 @@ main {
       }
     });
   </script>
-
 </body>
 </html>
