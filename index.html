@@ -4,21 +4,23 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>MIA Monitoraggio Adoption</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
   <style>
     :root {
-      --bg: #0a1024;
-      --surface: #0f172d;
-      --panel: #131c34;
-      --primary: #58d3ff;
-      --secondary: #8c7bff;
-      --accent: #2ee6a8;
-      --warning: #ff6d60;
-      --text: #e8ecf5;
-      --muted: #9aa7c7;
-      --stroke: rgba(255, 255, 255, 0.08);
+      --bg: #f7f9fc;
+      --panel: #ffffff;
+      --border: #e7eaf3;
+      --text: #1d2636;
+      --muted: #66748a;
+      --blue: #1b4ef0;
+      --teal: #1fbad6;
+      --green: #2bbf7f;
+      --red: #dc3b3b;
+      --orange: #ffb347;
+      --gold: #f2c94c;
+      --shadow: 0 12px 36px rgba(29, 38, 54, 0.08);
       --radius: 18px;
     }
 
@@ -29,646 +31,376 @@
     body {
       margin: 0;
       font-family: 'Inter', system-ui, -apple-system, sans-serif;
-      background:
-        radial-gradient(circle at 12% 18%, rgba(88, 211, 255, 0.08), transparent 35%),
-        radial-gradient(circle at 88% 10%, rgba(140, 123, 255, 0.08), transparent 35%),
-        radial-gradient(circle at 60% 70%, rgba(46, 230, 168, 0.07), transparent 40%),
-        var(--bg);
+      background: var(--bg);
       color: var(--text);
-      min-height: 100vh;
     }
 
-    a { color: inherit; }
-
-    /* --- Layout --- */
-    .app-shell {
-      display: grid;
-      grid-template-rows: auto 1fr;
-      min-height: 100vh;
+    .shell {
+      max-width: 1300px;
+      margin: 0 auto;
+      padding: 32px 24px 64px;
+      display: flex;
+      flex-direction: column;
+      gap: 26px;
     }
 
     header {
-      position: sticky;
-      top: 0;
-      z-index: 10;
-      background: linear-gradient(180deg, rgba(10, 16, 36, 0.95) 0%, rgba(10, 16, 36, 0.85) 100%);
-      backdrop-filter: blur(10px);
-      border-bottom: 1px solid var(--stroke);
-    }
-
-    .header-inner {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 16px;
-      padding: 22px 64px 14px;
-      flex-wrap: wrap;
+      gap: 12px;
     }
 
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      font-weight: 700;
+    header h1 {
+      margin: 0;
+      font-size: 20px;
       letter-spacing: 0.3px;
-      color: var(--text);
     }
 
-    .pulse {
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
-      background: var(--accent);
-      position: relative;
-    }
-
-    .pulse::after {
-      content: '';
-      position: absolute;
-      inset: -6px;
-      border-radius: 999px;
-      border: 1px solid rgba(46, 230, 168, 0.55);
-      animation: pulse 2.2s infinite;
-    }
-
-    @keyframes pulse {
-      0% { transform: scale(0.65); opacity: 0.8; }
-      100% { transform: scale(1.7); opacity: 0; }
-    }
-
-    .toolbar {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
+    header span { color: var(--muted); font-size: 14px; }
 
     .pill {
       padding: 8px 14px;
-      border-radius: 12px;
-      border: 1px solid var(--stroke);
-      background: rgba(255, 255, 255, 0.03);
-      color: var(--muted);
-      font-weight: 600;
-      font-size: 13px;
-    }
-
-    nav {
-      padding: 0 64px 18px;
-    }
-
-    .tablist {
-      display: inline-flex;
-      gap: 10px;
-      padding: 6px;
-      border-radius: 14px;
-      border: 1px solid var(--stroke);
-      background: rgba(255, 255, 255, 0.04);
-      list-style: none;
-      margin: 0;
-    }
-
-    .tab-button {
-      border: none;
-      background: transparent;
-      color: var(--muted);
-      padding: 10px 18px;
-      border-radius: 10px;
-      font-weight: 600;
-      font-size: 14px;
-      cursor: pointer;
-      transition: background 0.15s ease, color 0.15s ease, box-shadow 0.2s ease;
-    }
-
-    .tab-button[aria-selected="true"] {
-      color: var(--text);
-      background: linear-gradient(135deg, rgba(88, 211, 255, 0.18), rgba(140, 123, 255, 0.16));
-      box-shadow: 0 8px 28px rgba(88, 211, 255, 0.18);
-    }
-
-    main {
-      padding: 36px 64px 72px;
-      max-width: 1400px;
-      margin: 0 auto;
-      width: 100%;
-      display: grid;
-      gap: 24px;
-    }
-
-    /* --- Cards & Panels --- */
-    .section-heading {
-      display: flex;
-      align-items: center;
-      gap: 12px;
+      border-radius: 999px;
+      background: #eef3ff;
+      color: var(--blue);
       font-weight: 700;
-      letter-spacing: 0.3px;
-      font-size: 18px;
-      margin: 6px 0 6px;
-    }
-
-    .section-heading span {
-      width: 6px;
-      height: 22px;
-      border-radius: 12px;
-      background: linear-gradient(180deg, var(--primary), var(--secondary));
-      display: inline-block;
+      font-size: 13px;
     }
 
     .panel {
-      position: relative;
-      background: linear-gradient(180deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%);
-      border: 1px solid var(--stroke);
+      background: var(--panel);
+      border: 1px solid var(--border);
       border-radius: var(--radius);
-      padding: 22px;
-      overflow: hidden;
-      box-shadow: 0 18px 42px rgba(0, 0, 0, 0.35);
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      box-shadow: var(--shadow);
+      padding: 18px 20px;
     }
 
-    .panel:hover { transform: translateY(-2px); box-shadow: 0 22px 56px rgba(0, 0, 0, 0.4); }
+    .grid { display: grid; gap: 16px; }
+    .grid.cols-3 { grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); }
+    .grid.cols-2 { grid-template-columns: 2fr 1.1fr; }
+    .grid.cols-2.tight { grid-template-columns: 1.1fr 1fr; }
 
-    .panel::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-      background: radial-gradient(circle at 18% 18%, rgba(88, 211, 255, 0.09), transparent 40%);
-    }
+    .kpi-label { text-transform: uppercase; letter-spacing: 0.6px; color: var(--muted); font-weight: 700; font-size: 12px; }
+    .kpi-value { font-size: 38px; font-weight: 800; margin: 10px 0 6px; }
+    .kpi-diff { font-size: 14px; font-weight: 700; }
+    .kpi-diff.positive { color: var(--green); }
+    .kpi-diff.negative { color: var(--red); }
 
-    .panel h3 {
-      margin: 0;
-      color: var(--muted);
-      text-transform: uppercase;
-      letter-spacing: 0.7px;
-      font-size: 12px;
-      font-weight: 700;
-    }
-
-    .kpi-value {
-      margin-top: 12px;
-      font-size: 34px;
-      font-weight: 800;
-      letter-spacing: -0.4px;
-    }
-
-    .kpi-sub {
-      margin-top: 6px;
-      color: var(--muted);
-      font-size: 13px;
-    }
-
-    .grid {
-      display: grid;
-      gap: 18px;
-    }
-
-    .grid.metrics { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
-    .grid.split-2-1 { grid-template-columns: 2fr 1fr; align-items: stretch; }
-    .grid.split-3 { grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
-
-    /* --- Feedback layout --- */
-    .feedback-wrap { display: grid; gap: 18px; grid-template-columns: 1fr 1.6fr; align-items: start; }
-    .feedback-summary { display: flex; gap: 16px; align-items: center; }
-    .badge-icon {
-      width: 72px;
-      height: 72px;
-      border-radius: 16px;
-      display: grid;
-      place-items: center;
-      font-size: 36px;
-      background: radial-gradient(circle at 30% 30%, rgba(255, 109, 96, 0.35), rgba(255, 109, 96, 0.16));
-      border: 1px solid rgba(255, 109, 96, 0.45);
-      box-shadow: 0 18px 48px rgba(255, 109, 96, 0.25);
-    }
-
-    .issue-list { display: flex; flex-direction: column; gap: 12px; }
-    .issue-row {
-      display: grid;
-      grid-template-columns: 1.1fr 1fr;
-      gap: 12px;
-      padding: 14px 16px;
-      border-radius: 14px;
-      border: 1px solid var(--stroke);
-      background: rgba(255, 255, 255, 0.03);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .issue-row::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-      background: linear-gradient(135deg, rgba(88, 211, 255, 0.05), rgba(140, 123, 255, 0.05));
-    }
-
-    .issue-row strong { display: inline-flex; align-items: center; gap: 10px; font-size: 15px; }
-    .swatch { width: 12px; height: 12px; border-radius: 999px; box-shadow: 0 8px 18px rgba(0,0,0,0.25); }
-    .issue-note { color: var(--muted); font-size: 14px; line-height: 1.5; }
-
-    .pair-hallu { border-color: rgba(255, 109, 96, 0.6); }
-    .pair-hallu .swatch { background: #ff6d60; }
-    .pair-intent { border-color: rgba(88, 211, 255, 0.6); }
-    .pair-intent .swatch { background: #58d3ff; }
-    .pair-latency { border-color: rgba(140, 123, 255, 0.6); }
-    .pair-latency .swatch { background: #8c7bff; }
-    .pair-style { border-color: rgba(46, 230, 168, 0.6); }
-    .pair-style .swatch { background: #2ee6a8; }
-
-    .chips { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 6px; }
-    .chip {
-      padding: 10px 14px;
-      border-radius: 12px;
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid var(--stroke);
-      color: var(--text);
-      font-size: 13px;
-      font-weight: 600;
-    }
+    .section-title { display: flex; gap: 10px; align-items: center; font-weight: 800; margin: 6px 0 12px; }
+    .section-title::before { content: ''; width: 6px; height: 22px; border-radius: 12px; background: linear-gradient(180deg, var(--blue), var(--teal)); }
 
     canvas { width: 100%; height: auto; }
 
-    /* --- Responsive --- */
-    @media (max-width: 1024px) {
-      main { padding: 30px 28px 64px; }
-      nav { padding: 0 28px 16px; }
-      .header-inner { padding: 18px 28px 12px; }
-      .grid.split-2-1 { grid-template-columns: 1fr; }
-      .feedback-wrap { grid-template-columns: 1fr; }
-    }
+    .legend { display: grid; gap: 6px; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 10px; }
+    .legend-item { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--muted); }
+    .dot { width: 12px; height: 12px; border-radius: 4px; }
 
-    @media (max-width: 640px) {
-      .tablist { width: 100%; justify-content: space-between; }
-      .tab-button { flex: 1; text-align: center; }
-      .header-inner { flex-direction: column; align-items: flex-start; }
+    .footer-note { font-size: 12px; color: var(--muted); margin-top: 6px; }
+
+    .card { display: flex; flex-direction: column; gap: 6px; }
+
+    .feedback-wrap { display: grid; gap: 18px; grid-template-columns: 0.8fr 2fr; align-items: stretch; }
+    .feedback-badge { display: flex; flex-direction: column; gap: 10px; align-items: center; justify-content: center; text-align: center; padding: 24px; background: #e8efff; border-radius: var(--radius); border: 1px solid #d3ddf8; }
+    .feedback-badge .value { font-size: 46px; font-weight: 800; color: var(--blue); }
+    .feedback-badge .delta { font-size: 14px; font-weight: 700; color: var(--red); }
+    .feedback-badge .note { font-size: 13px; color: var(--muted); max-width: 220px; }
+
+    table { width: 100%; border-collapse: collapse; }
+    th { text-align: left; color: var(--muted); font-size: 12px; letter-spacing: 0.5px; padding-bottom: 10px; }
+    td { padding: 10px 8px; border-top: 1px solid var(--border); font-size: 14px; vertical-align: top; }
+    td strong { display: block; margin-bottom: 4px; }
+    .status { font-weight: 800; font-size: 12px; letter-spacing: 0.5px; padding: 6px 10px; border-radius: 10px; display: inline-block; }
+    .status.ongoing { background: #fff4e5; color: #d37b00; border: 1px solid #ffd9a1; }
+    .status.done { background: #e7f7ef; color: var(--green); border: 1px solid #bdebd4; }
+
+    .placeholder { height: 240px; display: grid; place-items: center; color: #b4bfd3; background: linear-gradient(135deg, #eff4ff, #f6f9ff); border: 1px dashed #d1dbee; border-radius: var(--radius); font-weight: 800; letter-spacing: 1px; text-transform: uppercase; }
+
+    @media (max-width: 980px) {
+      .grid.cols-2, .grid.cols-2.tight, .feedback-wrap { grid-template-columns: 1fr; }
+      header { flex-direction: column; align-items: flex-start; }
     }
   </style>
 </head>
 <body>
-  <div class="app-shell">
-    <!-- Header -->
+  <div class="shell">
     <header>
-      <div class="header-inner">
-        <div class="brand" aria-label="MIA Monitoraggio Adoption">
-          <span class="pulse" aria-hidden="true"></span>
-          <div>
-            <div style="font-size: 16px;">MIA Monitoraggio Adoption</div>
-            <div style="color: var(--muted); font-size: 13px;">Dashboard di utilizzo e performance</div>
-          </div>
-        </div>
-        <div class="toolbar" aria-label="Opzioni di contesto">
-          <span class="pill" title="Periodo di osservazione">Ultimi 7 giorni</span>
-          <span class="pill" title="Ambiente">Produzione</span>
-          <span class="pill" title="Aggiornamento">Aggiornato 5 min fa</span>
-        </div>
+      <div>
+        <h1>MIA Monitoraggio Adoption</h1>
+        <span>Periodo: ultimo aggiornamento 16 dicembre</span>
       </div>
-      <nav aria-label="Navigazione dashboard">
-        <ul class="tablist" role="tablist">
-          <li><button class="tab-button" role="tab" aria-selected="true" aria-controls="page-adoption" data-target="adoption">Adoption</button></li>
-          <li><button class="tab-button" role="tab" aria-selected="false" aria-controls="page-feedback" data-target="feedback">Feedback analysis</button></li>
-          <li><button class="tab-button" role="tab" aria-selected="false" aria-controls="page-economics" data-target="economics">Economics</button></li>
-        </ul>
-      </nav>
     </header>
 
-    <main>
-      <!-- Adoption Page -->
-      <section id="page-adoption" class="page" role="tabpanel" aria-labelledby="Adoption" aria-hidden="false">
-        <div class="section-heading"><span></span>Panoramica utilizzo</div>
-        <div class="grid metrics" aria-label="Indicatori principali">
-          <article class="panel" aria-label="Utenti unici">
-            <h3>Utenti unici</h3>
-            <div class="kpi-value" id="usersValue">445</div>
-            <div class="kpi-sub">+6% rispetto alla settimana precedente</div>
-          </article>
-          <article class="panel" aria-label="Interazioni">
-            <h3>Interazioni</h3>
-            <div class="kpi-value" id="interactionsValue">5900</div>
-            <div class="kpi-sub">Tasso di completion 94%</div>
-          </article>
-          <article class="panel" aria-label="Sessioni">
-            <h3>Sessioni</h3>
-            <div class="kpi-value" id="sessionsValue">949</div>
-            <div class="kpi-sub">Durata media 5m 12s</div>
-          </article>
-        </div>
-
-        <div class="section-heading" style="margin-top: 22px;"><span></span>Andamento settimanale</div>
-        <div class="grid split-2-1">
-          <article class="panel" aria-label="Trend settimanale interazioni e sessioni">
-            <div class="section-heading" style="margin: 0 0 12px; font-size: 15px;"><span></span>Interazioni e sessioni</div>
-            <canvas id="trendChart" aria-label="Grafico trend" role="img"></canvas>
-          </article>
-          <article class="panel" aria-label="Ripartizione tipologie di utilizzo">
-            <div class="section-heading" style="margin: 0 0 12px; font-size: 15px;"><span></span>Tipologie di utilizzo</div>
-            <canvas id="usagePieChart" aria-label="Grafico a torta utilizzo" role="img"></canvas>
-          </article>
-        </div>
-      </section>
-
-      <!-- Feedback Page -->
-      <section id="page-feedback" class="page" role="tabpanel" aria-labelledby="Feedback analysis" aria-hidden="true" hidden>
-        <div class="section-heading"><span></span>Feedback analysis</div>
-        <div class="feedback-wrap">
-          <article class="panel" aria-label="Sintesi feedback negativi">
-            <div class="feedback-summary">
-              <div class="badge-icon" aria-hidden="true">👎</div>
-              <div>
-                <div class="pill" style="padding: 6px 10px; display: inline-block; color: #ffb5ae; border-color: rgba(255,109,96,0.5);">Thumbs down</div>
-                <div class="kpi-value" style="margin-top: 6px;">48</div>
-                <div class="kpi-sub">pollici in giù su 5.900 interazioni</div>
-              </div>
+    <section class="panel">
+      <div class="grid cols-2">
+        <div class="grid" style="gap: 12px;">
+          <div class="grid cols-3">
+            <div class="card">
+              <span class="kpi-label">Utenti unici</span>
+              <div class="kpi-value">996</div>
+              <span class="kpi-diff positive">+45% *</span>
             </div>
-          </article>
-
-          <article class="panel" aria-label="Macrocategorie di errore e remediation">
-            <div class="section-heading" style="margin: 0 0 12px; font-size: 15px;"><span></span>Macrocategorie di errore</div>
-            <div class="issue-list" role="list">
-              <div class="issue-row pair-hallu" role="listitem">
-                <strong><span class="swatch" aria-hidden="true"></span>Allucinazione su feature di creazione file</strong>
-                <div class="issue-note">Rinforzo sul prompt di sistema di MIA</div>
-              </div>
-              <div class="issue-row pair-intent" role="listitem">
-                <strong><span class="swatch" aria-hidden="true"></span>Bug di risposta con errore di sistema</strong>
-                <div class="issue-note">Bug corretto e portato in produzione</div>
-              </div>
-              <div class="issue-row pair-latency" role="listitem">
-                <strong><span class="swatch" aria-hidden="true"></span>Elevata latenza su richieste complesse</strong>
-                <div class="issue-note">Caching risultati frequenti + ottimizzazione orchestrazione</div>
-              </div>
-              <div class="issue-row pair-style" role="listitem">
-                <strong><span class="swatch" aria-hidden="true"></span>Stile di risposta incoerente</strong>
-                <div class="issue-note">Linee guida tonality riviste e validate</div>
-              </div>
+            <div class="card">
+              <span class="kpi-label">Interazioni</span>
+              <div class="kpi-value">14.090</div>
+              <span class="kpi-diff positive">+26% *</span>
             </div>
-          </article>
-        </div>
-      </section>
+            <div class="card">
+              <span class="kpi-label">Sessioni</span>
+              <div class="kpi-value">2099</div>
+              <span class="kpi-diff positive">+22% *</span>
+            </div>
+          </div>
 
-      <!-- Economics Page -->
-      <section id="page-economics" class="page" role="tabpanel" aria-labelledby="Economics" aria-hidden="true" hidden>
-        <div class="section-heading"><span></span>Economics</div>
-        <div class="grid metrics" aria-label="Indicatori economici">
-          <article class="panel" aria-label="Costi aggregati">
-            <h3>Costi aggregati</h3>
-            <div class="kpi-value" id="totalCosts">$ 24,000</div>
-            <div class="kpi-sub">Periodo corrente</div>
-          </article>
-          <article class="panel" aria-label="Costi variabili">
-            <h3>Costi variabili</h3>
-            <div class="kpi-value" id="variableCosts">$ 40</div>
-            <div class="kpi-sub">Su componenti opzionali</div>
-          </article>
-          <article class="panel" aria-label="Costo medio LLM">
-            <h3>Costo medio LLM per 1k token</h3>
-            <div class="kpi-value" id="avgLLMCost">$ 0.0050</div>
-            <div class="kpi-sub">Riduzione -4% WoW</div>
-          </article>
+          <div>
+            <div class="section-title">Andamento utenti</div>
+            <canvas id="trendChart" height="260" aria-label="Grafico andamento utenti" role="img"></canvas>
+            <div class="footer-note">* rispetto all'ultima rilevazione (25/11 - 10/12)</div>
+          </div>
         </div>
 
-        <div class="grid split-2-1" style="margin-top: 10px;">
-          <article class="panel" aria-label="Andamento costi">
-            <div class="section-heading" style="margin: 0 0 12px; font-size: 15px;"><span></span>Andamento costi</div>
-            <canvas id="costTrendChart" aria-label="Bar chart costi" role="img" height="240"></canvas>
-          </article>
-          <article class="panel" aria-label="Ripartizione costo per modello">
-            <div class="section-heading" style="margin: 0 0 12px; font-size: 15px;"><span></span>Ripartizione costo per modello</div>
-            <canvas id="modelCostChart" aria-label="Doughnut costo modello" role="img" height="240"></canvas>
-          </article>
+        <div class="panel" style="padding: 16px;">
+          <canvas id="usagePieChart" aria-label="Ripartizione tipologie di utilizzo" role="img"></canvas>
+          <div class="legend">
+            <div class="legend-item"><span class="dot" style="background:#5f6b78"></span>50% Generiche</div>
+            <div class="legend-item"><span class="dot" style="background:#e44f5a"></span>24% Interrogazione documentale</div>
+            <div class="legend-item"><span class="dot" style="background:#f2c94c"></span>7% Generazione immagini</div>
+            <div class="legend-item"><span class="dot" style="background:#61c2c0"></span>6% Summarization</div>
+            <div class="legend-item"><span class="dot" style="background:#5ad47f"></span>6% Drafting</div>
+            <div class="legend-item"><span class="dot" style="background:#3e9dec"></span>4% Creazione</div>
+            <div class="legend-item"><span class="dot" style="background:#7d67ff"></span>3% Comparazione</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="section-title">Feedback negativi su 10.400 interazioni</div>
+      <div class="feedback-wrap">
+        <div class="feedback-badge">
+          <div class="value">77</div>
+          <div class="delta">-7% *</div>
+          <div class="note">Interazioni negative rispetto alle interazioni totali</div>
+          <div class="footer-note">* rispetto all'ultima rilevazione (25/11 - 10/12)</div>
         </div>
 
-        <div class="section-heading" style="margin-top: 14px;"><span></span>Driver di spesa</div>
-        <div class="chips" aria-label="Driver di spesa">
-          <span class="chip">Caching di risposta attivo su top intent</span>
-          <span class="chip">Accorpamento richieste batch per orchestrazione</span>
-          <span class="chip">Monitoraggio real-time dei costi per stream</span>
+        <div class="table-wrap">
+          <table aria-label="Tabella remediation">
+            <thead>
+              <tr>
+                <th style="width: 12%;">Distribuzione %</th>
+                <th style="width: 34%;">Categoria</th>
+                <th style="width: 40%;">Remediation</th>
+                <th style="width: 14%;">Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>4%</strong></td>
+                <td>Qualità delle immagini</td>
+                <td><strong>Enhancing latest LLM</strong></td>
+                <td><span class="status ongoing">ONGOING</span></td>
+              </tr>
+              <tr>
+                <td><strong>36%</strong></td>
+                <td>Feedback qualitativi </td>
+                <td><strong>Benchmarking latest LLM</strong></td>
+                <td><span class="status ongoing">ONGOING</span></td>
+              </tr>
+              <tr>
+                <td><strong>30%</strong></td>
+                <td>Elaborazione di file Excel</td>
+                <td><strong>Enhance della funzionalità</strong></td>
+                <td><span class="status ongoing">ONGOING</span></td>
+              </tr>
+              <tr>
+                <td><strong>4%</strong></td>
+                <td>Ricerca Web non attivata</td>
+                <td><strong>Enhancing sub-agent di ricerca web</strong></td>
+                <td><span class="status done">RISOLTO</span></td>
+              </tr>
+              <tr>
+                <td><strong>10%</strong></td>
+                <td>Creazione di documenti</td>
+                <td><strong>Rinforzo su prompt di sistema MIA</strong></td>
+                <td><span class="status done">RISOLTO</span></td>
+              </tr>
+              <tr>
+                <td><strong>9%</strong></td>
+                <td>Domande sulla intranet</td>
+                <td><strong>Rinforzo su prompt di sistema MIA con data rilascio KB</strong></td>
+                <td><span class="status done">RISOLTO</span></td>
+              </tr>
+              <tr>
+                <td><strong>7%</strong></td>
+                <td>Restituzione risposta errore di sistema</td>
+                <td><strong>Bug di sistema da correggere in produzione</strong></td>
+                <td><span class="status done">RISOLTO</span></td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="footer-note">* % interazioni negative rispetto alla baseline (periodo 25/11 - 27/11)</div>
         </div>
-      </section>
-    </main>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="grid cols-3">
+        <div class="card">
+          <span class="kpi-label">Infrastruttura (stima a regime 2k/mese)</span>
+          <div class="kpi-value">$752</div>
+          <span class="kpi-diff positive">+21% *</span>
+        </div>
+        <div class="card">
+          <span class="kpi-label">Variabile (token modelli)</span>
+          <div class="kpi-value">$81</div>
+          <span class="kpi-diff positive">+32% *</span>
+        </div>
+        <div class="card">
+          <span class="kpi-label">Unitario (1000 token)</span>
+          <div class="kpi-value">$0,005</div>
+        </div>
+      </div>
+
+      <div class="grid cols-2 tight" style="margin-top: 14px; align-items: center;">
+        <div>
+          <div class="section-title">Consumo mensile (spesa variabile)</div>
+          <div class="placeholder" aria-label="Prossimo aggiornamento consumo">Next update</div>
+          <div class="footer-note">* rispetto all'ultima rilevazione (25/11 - 10/12)</div>
+        </div>
+        <div class="panel" style="padding: 16px;">
+          <canvas id="modelCostChart" height="260" aria-label="Ripartizione costo per modello" role="img"></canvas>
+        </div>
+      </div>
+    </section>
   </div>
 
   <script>
     Chart.register(ChartDataLabels);
 
-    const pages = document.querySelectorAll('.page');
-    const tabs = document.querySelectorAll('.tab-button');
-
-    function switchPage(targetId) {
-      pages.forEach((page) => {
-        const active = page.id === `page-${targetId}`;
-        page.hidden = !active;
-        page.setAttribute('aria-hidden', String(!active));
-        page.classList.toggle('active', active);
-      });
-
-      tabs.forEach((tab) => {
-        const selected = tab.dataset.target === targetId;
-        tab.setAttribute('aria-selected', String(selected));
-      });
-    }
-
-    tabs.forEach((tab) => {
-      tab.addEventListener('click', () => switchPage(tab.dataset.target));
-      tab.addEventListener('keydown', (event) => {
-        if (event.key === 'Enter' || event.key === ' ') {
-          event.preventDefault();
-          switchPage(tab.dataset.target);
-        }
-      });
-    });
-
     const trendCtx = document.getElementById('trendChart');
     const usagePieCtx = document.getElementById('usagePieChart');
-    const costTrendCtx = document.getElementById('costTrendChart');
     const modelCostCtx = document.getElementById('modelCostChart');
 
-    const labels = ['Mar', 'Mer', 'Gio'];
-    const baseTrend = [120, 145, 162];
-    const baseSessions = [32, 36, 34];
-
-    const gradient = trendCtx.getContext('2d').createLinearGradient(0, 0, 0, 260);
-    gradient.addColorStop(0, 'rgba(88, 211, 255, 0.35)');
-    gradient.addColorStop(1, 'rgba(88, 211, 255, 0)');
+    const trendData = {
+      labels: ['25/11 - 27/11', '28/11 - 2/12', '3/12 - 9/12', '10/12 - 16/12'],
+      datasets: [
+        {
+          label: 'Baseline',
+          data: [445, 162, 187, 242],
+          backgroundColor: '#ccd3e5',
+          borderRadius: 10,
+          barThickness: 32
+        },
+        {
+          label: 'Utenti rientranti',
+          data: [0, 74, 92, 262],
+          backgroundColor: '#1b4ef0',
+          borderRadius: 10,
+          barThickness: 32
+        }
+      ]
+    };
 
     new Chart(trendCtx, {
-      type: 'line',
-      data: {
-        labels,
-        datasets: [
-          {
-            label: 'Interazioni (k)',
-            data: baseTrend,
-            borderColor: '#58d3ff',
-            backgroundColor: gradient,
-            fill: true,
-            tension: 0.35,
-            borderWidth: 2.4,
-            pointRadius: 4,
-            pointBackgroundColor: '#0b1021',
-            pointBorderColor: '#58d3ff'
-          },
-          {
-            label: 'Sessioni (k)',
-            data: baseSessions,
-            borderColor: '#8c7bff',
-            backgroundColor: 'transparent',
-            fill: false,
-            tension: 0.35,
-            borderWidth: 2,
-            pointRadius: 3,
-            pointBackgroundColor: '#8c7bff',
-            pointBorderColor: '#8c7bff'
-          }
-        ]
-      },
+      type: 'bar',
+      data: trendData,
       options: {
-        animation: false,
-        plugins: {
-          legend: { labels: { color: '#d9e1f7', font: { size: 11 } }, position: 'top' },
-          tooltip: {
-            backgroundColor: '#11172e',
-            borderColor: 'rgba(255, 255, 255, 0.08)',
-            borderWidth: 1,
-            padding: 10,
-            titleColor: '#fff',
-            bodyColor: '#dfe7ff'
-          },
-          datalabels: { display: false }
-        },
+        responsive: true,
         scales: {
-          x: { ticks: { color: '#9aa7c7', font: { size: 11 } }, grid: { color: 'rgba(255,255,255,0.04)' } },
-          y: { ticks: { color: '#9aa7c7', font: { size: 11 } }, grid: { color: 'rgba(255,255,255,0.04)' }, beginAtZero: true }
+          x: {
+            stacked: true,
+            grid: { display: false },
+            ticks: { color: '#66748a', font: { size: 12 } }
+          },
+          y: {
+            stacked: true,
+            grid: { color: '#eef1f6' },
+            ticks: {
+              color: '#66748a',
+              stepSize: 100,
+              callback: (value) => value
+            }
+          }
+        },
+        plugins: {
+          legend: { display: false },
+          datalabels: {
+            color: '#ffffff',
+            anchor: 'end',
+            align: 'start',
+            offset: -4,
+            font: { weight: '700', size: 12 },
+            formatter: (value) => (value ? value : '')
+          }
         }
       }
     });
 
-    const usageData = [55, 19, 5, 3, 4, 3, 2, 7];
+    const usageData = [50, 24, 7, 6, 6, 4, 3];
 
     new Chart(usagePieCtx, {
       type: 'doughnut',
       data: {
         labels: [
           'Generiche',
-          'Interrogazione documenti',
-          'Ricerca web',
-          'Traduzione',
-          'Drafting',
+          'Interrogazione documentale',
+          'Generazione immagini',
           'Summarization',
-          'Comparazione',
-          'Generazione immagini'
+          'Drafting',
+          'Creazione',
+          'Comparazione'
         ],
-        datasets: [{
-          data: usageData,
-          backgroundColor: ['#58d3ff', '#8c7bff', '#2ee6a8', '#ffae63', '#ff6d60', '#7ce7c7', '#ffc764', '#b38cff'],
-          borderWidth: 1,
-          borderColor: '#0b1021'
-        }]
-      },
-      options: {
-        cutout: '55%',
-        plugins: {
-          legend: {
-            position: 'bottom',
-            labels: { color: '#d9e1f7', boxWidth: 12, padding: 8, font: { size: 11 } }
-          },
-          tooltip: { enabled: false },
-          datalabels: {
-            color: '#ffffff',
-            font: { size: 11, weight: '600' },
-            formatter: function(value, ctx) {
-              const dataArr = ctx.chart.data.datasets[0].data;
-              const total = dataArr.reduce((a, b) => a + b, 0);
-              const pct = value / total * 100;
-              return pct.toFixed(0) + '%';
-            }
+        datasets: [
+          {
+            data: usageData,
+            backgroundColor: ['#5f6b78', '#e44f5a', '#f2c94c', '#61c2c0', '#5ad47f', '#3e9dec', '#7d67ff'],
+            borderWidth: 2,
+            borderColor: '#ffffff'
           }
-        }
-      }
-    });
-
-    const costLabels = ['Mar', 'Mer', 'Gio', 'Totale'];
-    const baseCosts = [8200, 9100, 8700];
-
-    new Chart(costTrendCtx, {
-      type: 'bar',
-      data: {
-        labels: costLabels,
-        datasets: [{
-          label: 'Costi (€)',
-          data: [...baseCosts, baseCosts.reduce((a, b) => a + b, 0)],
-          backgroundColor: '#2ee6a8',
-          borderColor: '#0b1021',
-          borderWidth: 1.2,
-          borderRadius: 8
-        }]
+        ]
       },
       options: {
-        animation: false,
-        maintainAspectRatio: false,
+        cutout: '62%',
         plugins: {
           legend: { display: false },
-          tooltip: {
-            backgroundColor: '#11172e',
-            titleColor: '#fff',
-            bodyColor: '#dfe7ff',
-            padding: 12,
-            borderColor: 'rgba(255,255,255,0.08)',
-            borderWidth: 1
-          },
-          datalabels: { display: false }
-        },
-        scales: {
-          x: { ticks: { color: '#9aa7c7', font: { size: 12 } }, grid: { color: 'rgba(255,255,255,0.04)' } },
-          y: {
-            ticks: {
-              color: '#9aa7c7',
-              font: { size: 12 },
-              callback: function(value) { return '€ ' + value.toLocaleString(); }
-            },
-            grid: { color: 'rgba(255,255,255,0.06)' },
-            beginAtZero: true
+          tooltip: { enabled: false },
+          datalabels: {
+            color: '#1d2636',
+            font: { weight: '800', size: 12 },
+            formatter: (value) => value + '%'
           }
         }
       }
     });
 
-    const modelCostData = [39, 42, 11, 7, 1];
+    const modelCostData = [42, 46, 11, 1];
 
     new Chart(modelCostCtx, {
       type: 'doughnut',
       data: {
-        labels: [
-          'gpt-4.1-mini',
-          'gpt-4.1',
-          'gpt-image-1-mini',
-          'text-embedding-ada-002',
-          'whisper'
-        ],
-        datasets: [{
-          data: modelCostData,
-          backgroundColor: ['#58d3ff', '#8c7bff', '#2ee6a8', '#ffae63', '#ff6d60', '#7ce7c7'],
-          borderWidth: 1,
-          borderColor: '#0b1021'
-        }]
+        labels: ['GPT 4.1 MINI', 'GPT 4.1', 'IMAGE 1', 'WHISPER'],
+        datasets: [
+          {
+            data: modelCostData,
+            backgroundColor: ['#58d3ff', '#8c7bff', '#2ee6a8', '#ffae63'],
+            borderWidth: 2,
+            borderColor: '#ffffff'
+          }
+        ]
       },
       options: {
-        animation: false,
-        cutout: '60%',
+        cutout: '58%',
         plugins: {
           legend: {
             position: 'bottom',
-            labels: { color: '#d9e1f7', boxWidth: 12, padding: 8, font: { size: 11 } }
+            labels: { color: '#66748a', boxWidth: 12, padding: 12, font: { size: 12, weight: '700' } }
           },
           tooltip: { enabled: false },
           datalabels: {
-            color: '#ffffff',
-            font: { size: 11, weight: '600' },
-            formatter: function(value, ctx) {
-              const dataArr = ctx.chart.data.datasets[0].data;
-              const total = dataArr.reduce((a, b) => a + b, 0);
-              const pct = value / total * 100;
-              return pct.toFixed(0) + '%';
-            }
+            color: '#1d2636',
+            font: { weight: '800', size: 12 },
+            formatter: (value) => value + '%'
           }
         }
       }
