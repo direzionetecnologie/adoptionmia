@@ -137,25 +137,21 @@
           <div class="grid cols-3">
             <div class="card">
               <span class="kpi-label">Utenti unici</span>
-              <div class="kpi-value">996</div>
-              <span class="kpi-diff positive">+45% *</span>
+              <div class="kpi-value">877</div>
             </div>
             <div class="card">
               <span class="kpi-label">Interazioni</span>
-              <div class="kpi-value">14.090</div>
-              <span class="kpi-diff positive">+26% *</span>
+              <div class="kpi-value">18680</div>
             </div>
             <div class="card">
               <span class="kpi-label">Sessioni</span>
-              <div class="kpi-value">2099</div>
-              <span class="kpi-diff positive">+22% *</span>
+              <div class="kpi-value">2694</div>
             </div>
           </div>
 
           <div>
             <div class="section-title">Andamento utenti</div>
             <canvas id="trendChart" height="260" aria-label="Grafico andamento utenti" role="img"></canvas>
-            <div class="footer-note">* rispetto all'ultima rilevazione (25/11 - 10/12)</div>
           </div>
         </div>
 
@@ -175,13 +171,11 @@
     </section>
 
     <section class="panel">
-      <div class="section-title">Feedback negativi su 14.090 interazioni</div>
+      <div class="section-title">Feedback negativi su 18.680 interazioni</div>
       <div class="feedback-wrap">
         <div class="feedback-badge">
-          <div class="value">77</div>
-          <div class="delta">-7% *</div>
+          <div class="value">83</div>
           <div class="note">Interazioni negative rispetto alle interazioni totali</div>
-          <div class="footer-note">* rispetto all'ultima rilevazione (25/11 - 10/12)</div>
         </div>
 
         <div class="table-wrap">
@@ -247,14 +241,12 @@
     <section class="panel">
       <div class="grid cols-3">
         <div class="card">
-          <span class="kpi-label">Infrastruttura (stima a regime 2k/mese)</span>
-          <div class="kpi-value">$752</div>
-          <span class="kpi-diff positive">+21% *</span>
+          <span class="kpi-label">Infrastruttura (costo medio mensile)*</span>
+          <div class="kpi-value">$1313</div>
         </div>
         <div class="card">
           <span class="kpi-label">Variabile (token modelli)</span>
-          <div class="kpi-value">$107</div>
-          <span class="kpi-diff positive">+32% *</span>
+          <div class="kpi-value">$149</div>
         </div>
         <div class="card">
           <span class="kpi-label">Unitario (1000 token)</span>
@@ -266,7 +258,7 @@
         <div>
           <div class="section-title">Consumo mensile (spesa variabile)</div>
           <div class="placeholder" aria-label="Prossimo aggiornamento consumo">Next update</div>
-          <div class="footer-note">* rispetto all'ultima rilevazione (25/11 - 10/12)</div>
+          <div class="footer-note">*calcolato sul billing nov-dic</div>
         </div>
         <div class="panel" style="padding: 16px;">
           <canvas id="modelCostChart" height="260" aria-label="Ripartizione costo per modello" role="img"></canvas>
@@ -283,18 +275,18 @@
     const modelCostCtx = document.getElementById('modelCostChart');
 
     const trendData = {
-      labels: ['25/11 - 27/11', '28/11 - 2/12', '3/12 - 9/12', '10/12 - 16/12'],
+      labels: ['25/11 - 27/11', '28/11 - 2/12', '3/12 - 9/12', '10/12 - 16/12', '17/12 - 8/01'],
       datasets: [
         {
-          label: 'Utenti nuovi',
-          data: [445, 162, 187, 242],
+          label: 'Utenti rientranti',
+          data: [445, 162, 187, 242, 416],
           backgroundColor: '#ccd3e5',
           borderRadius: 10,
           barThickness: 32
         },
         {
-          label: 'Utenti rientranti',
-          data: [0, 74, 92, 262],
+          label: 'Utenti nuovi',
+          data: [0, 74, 92, 262, 84],
           backgroundColor: '#1b4ef0',
           borderRadius: 10,
           barThickness: 32
