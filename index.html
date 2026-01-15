@@ -127,7 +127,7 @@
     <header>
       <div>
         <h1>MIA Monitoraggio Adoption</h1>
-        <span>Periodo: ultimo aggiornamento 8 gennaio</span>
+        <span>Periodo: ultimo aggiornamento 14 gennaio</span>
       </div>
     </header>
 
@@ -137,15 +137,15 @@
           <div class="grid cols-3">
             <div class="card">
               <span class="kpi-label">Utenti unici</span>
-              <div class="kpi-value">877</div>
+              <div class="kpi-value">911</div>
             </div>
             <div class="card">
               <span class="kpi-label">Interazioni</span>
-              <div class="kpi-value">18680</div>
+              <div class="kpi-value">20220</div>
             </div>
             <div class="card">
               <span class="kpi-label">Sessioni</span>
-              <div class="kpi-value">2694</div>
+              <div class="kpi-value">2920</div>
             </div>
           </div>
 
@@ -171,10 +171,10 @@
     </section>
 
     <section class="panel">
-      <div class="section-title">Feedback negativi su 18.680 interazioni</div>
+      <div class="section-title">Feedback negativi su 20.220 interazioni</div>
       <div class="feedback-wrap">
         <div class="feedback-badge">
-          <div class="value">83</div>
+          <div class="value">88</div>
           <div class="note">Interazioni negative rispetto alle interazioni totali</div>
         </div>
 
@@ -190,12 +190,6 @@
             </thead>
             <tbody>
               <tr>
-                <td><strong>4%</strong></td>
-                <td>Qualità delle immagini</td>
-                <td><strong>Enhancing latest LLM</strong></td>
-                <td><span class="status ongoing">ONGOING</span></td>
-              </tr>
-              <tr>
                 <td><strong>36%</strong></td>
                 <td>Feedback qualitativi </td>
                 <td><strong>Benchmarking latest LLM</strong></td>
@@ -209,15 +203,15 @@
               </tr>
               <tr>
                 <td><strong>4%</strong></td>
-                <td>Ricerca Web non attivata</td>
-                <td><strong>Enhancing sub-agent di ricerca web</strong></td>
+                <td>Qualità delle immagini</td>
+                <td><strong>Enhancing latest LLM</strong></td>
                 <td><span class="status ongoing">ONGOING</span></td>
               </tr>
               <tr>
                 <td><strong>10%</strong></td>
                 <td>Creazione di documenti</td>
                 <td><strong>Rinforzo su prompt di sistema MIA</strong></td>
-                <td><span class="status ongoing">ONGOING</span></td>
+                <td><span class="status ongoing">RISOLTO</span></td>
               </tr>
               <tr>
                 <td><strong>9%</strong></td>
@@ -230,6 +224,12 @@
                 <td>Restituzione risposta errore di sistema</td>
                 <td><strong>Bug di sistema da correggere in produzione</strong></td>
                 <td><span class="status done">RISOLTO</span></td>
+              </tr>
+              <tr>
+                <td><strong>4%</strong></td>
+                <td>Ricerca Web non attivata</td>
+                <td><strong>Enhancing sub-agent di ricerca web</strong></td>
+                <td><span class="status ongoing">RISOLTO</span></td>
               </tr>
             </tbody>
           </table>
@@ -246,7 +246,7 @@
         </div>
         <div class="card">
           <span class="kpi-label">Variabile (token modelli)</span>
-          <div class="kpi-value">$149</div>
+          <div class="kpi-value">$157</div>
         </div>
         <div class="card">
           <span class="kpi-label">Unitario (1000 token)</span>
@@ -275,18 +275,18 @@
     const modelCostCtx = document.getElementById('modelCostChart');
 
     const trendData = {
-      labels: ['25/11 - 27/11', '28/11 - 2/12', '3/12 - 9/12', '10/12 - 16/12', '17/12 - 8/01'],
+      labels: ['25/11 - 27/11', '28/11 - 2/12', '3/12 - 9/12', '10/12 - 16/12', '17/12 - 8/01', '9/01 - 14/01'],
       datasets: [
         {
           label: 'Utenti rientranti',
-          data: [445, 162, 187, 242, 416],
+          data: [0, 162, 187, 242, 416, 182],
           backgroundColor: '#ccd3e5',
           borderRadius: 10,
           barThickness: 32
         },
         {
           label: 'Utenti nuovi',
-          data: [0, 74, 92, 262, 84],
+          data: [445, 74, 92, 262, 84, 34],
           backgroundColor: '#1b4ef0',
           borderRadius: 10,
           barThickness: 32
