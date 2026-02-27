@@ -127,7 +127,7 @@
     <header>
       <div>
         <h1>MIA Monitoraggio Adoption</h1>
-        <span>Periodo: ultimo aggiornamento 28 gennaio</span>
+        <span>Periodo: ultimo aggiornamento 27 febbraio</span>
       </div>
     </header>
 
@@ -137,15 +137,15 @@
           <div class="grid cols-3">
             <div class="card">
               <span class="kpi-label">Utenti unici</span>
-              <div class="kpi-value">988</div>
+              <div class="kpi-value">1084</div>
             </div>
             <div class="card">
               <span class="kpi-label">Interazioni</span>
-              <div class="kpi-value">25140</div>
+              <div class="kpi-value">44090</div>
             </div>
             <div class="card">
               <span class="kpi-label">Sessioni</span>
-              <div class="kpi-value">3600</div>
+              <div class="kpi-value">4786</div>
             </div>
           </div>
 
@@ -171,10 +171,10 @@
     </section>
 
     <section class="panel">
-      <div class="section-title">Feedback negativi su 25.140 interazioni</div>
+      <div class="section-title">Feedback negativi su 44.090 interazioni</div>
       <div class="feedback-wrap">
         <div class="feedback-badge">
-          <div class="value">92</div>
+          <div class="value">120</div>
           <div class="note">Interazioni negative rispetto alle interazioni totali</div>
         </div>
 
@@ -190,12 +190,6 @@
             </thead>
             <tbody>
               <tr>
-                <td><strong>36%</strong></td>
-                <td>Feedback qualitativi </td>
-                <td><strong>Benchmarking latest LLM</strong></td>
-                <td><span class="status ongoing">ONGOING</span></td>
-              </tr>
-              <tr>
                 <td><strong>30%</strong></td>
                 <td>Elaborazione di file Excel</td>
                 <td><strong>Enhance della funzionalità</strong></td>
@@ -207,6 +201,11 @@
                 <td><strong>Enhancing latest LLM</strong></td>
                 <td><span class="status ongoing">ONGOING</span></td>
               </tr>
+              <tr>
+                <td><strong>36%</strong></td>
+                <td>Feedback qualitativi </td>
+                <td><strong>Benchmarking latest LLM</strong></td>
+                <td><span class="status done">RISOLTO</span></td>
               <tr>
                 <td><strong>10%</strong></td>
                 <td>Creazione di documenti</td>
@@ -245,7 +244,7 @@
         </div>
         <div class="card">
           <span class="kpi-label">Variabile (token modelli)</span>
-          <div class="kpi-value">$188</div>
+          <div class="kpi-value">$255</div>
         </div>
         <div class="card">
           <span class="kpi-label">Unitario (1000 token)</span>
@@ -274,18 +273,19 @@
     const modelCostCtx = document.getElementById('modelCostChart');
 
     const trendData = {
-      labels: ['25/11 - 27/11', '28/11 - 2/12', '3/12 - 9/12', '10/12 - 16/12', '17/12 - 8/01', '9/01 - 18/01', '19/01 - 28/01'],
+      labels: ['25/11 - 27/11', '28/11 - 2/12', '3/12 - 9/12', '10/12 - 16/12', '17/12 - 8/01', '9/01 - 18/01', '19/01 - 28/01', '29/'01 - 08/02', '09/02 - 18/02',
+              '19/02 - 26/02'],
       datasets: [
         {
           label: 'Utenti rientranti',
-          data: [0, 162, 187, 242, 416, 283, 412],
+          data: [0, 162, 187, 242, 416, 283, 412, 300, 331, 270],
           backgroundColor: '#ccd3e5',
           borderRadius: 10,
           barThickness: 32
         },
         {
           label: 'Utenti nuovi',
-          data: [445, 74, 92, 262, 84, 52, 60],
+          data: [445, 74, 92, 262, 84, 52, 60, 31, 38, 27],
           backgroundColor: '#1b4ef0',
           borderRadius: 10,
           barThickness: 32
